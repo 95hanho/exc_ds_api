@@ -17,6 +17,16 @@ public class User {
 	private int type; // 3
 	
 	public User() {}
+	
+	public User(String login_id, int grant, String insa, String name, int type) {
+		super();
+		this.login_id = login_id;
+		this.grant = grant;
+		this.insa = insa;
+		this.name = name;
+		this.type = type;
+	}
+
 	public User(String login_id, String login_pwd, int grant, String insa, String name, int type) {
 		super();
 		this.login_id = login_id;

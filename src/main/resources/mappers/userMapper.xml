@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.UserMapper">
+	<select id="getUser" resultType="User">
+        SELECT * FROM user 
+        WHERE login_id = #{login_id} and login_pwd = #{login_pwd}
+    </select>
+    <select id="getUser2" resultType="User" >
+        SELECT * FROM user 
+        WHERE login_id = #{login_id}
+    </select>
+    <select id="getUser3">
+		SELECT u.* FROM user u 
+		JOIN token t ON u.login_id = t.login_id 
+		WHERE t.refresh_token = #{refresh_token} and t.agent = #{agent} and t.connect_ip = #{connect_ip}
+	</select>
+    <select id="getToken" resultType="Token">
+		SELECT * FROM token 
+		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+	</select>
+    <insert id="insertToken">
+		INSERT INTO token(refresh_token, agent, connect_ip, login_id) 
+		VALUES (#{refresh_token}, #{agent}, #{connect_ip}, #{login_id})
+	</insert>
+	<update id="updateToken">
+		UPDATE token
+		SET refresh_token = #{refresh_token}
+		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+	</update>
+</mapper>
