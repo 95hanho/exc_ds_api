@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -124,25 +125,14 @@ public class UserController {
 	}
 	// 유저정보가져오기
 	@GetMapping("/v1/member/info")
-	public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Expert-Access") String access_token) {
+	public ResponseEntity<Map<String, Object>> getUserInfo(@RequestAttribute("login_id") String login_id) {
 		System.out.println("getUserInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		System.out.println("param access_token : " + access_token);
+		System.out.println("param login_id : " + login_id);
 		
-		Claims claims = null;
-		try {
-			claims = tokenService.parseJwtToken(access_token);
-		} catch (Exception e) {
-			result.put("msg", "token제대로 안됨");
-			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
-		}
-		
-		System.out.println(claims);
-		if(claims != null) {
-			String id = (String) claims.get("login_id");
-			System.out.println(id);
-			User user = userService.getUser(id);
+		if(login_id != null) {
+			User user = userService.getUser(login_id);
 			result.put("msg", "success");
 			result.put("data", user);
 			return new ResponseEntity<>(result, HttpStatus.OK);

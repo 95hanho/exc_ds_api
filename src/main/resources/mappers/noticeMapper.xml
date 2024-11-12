@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.NoticeMapper">
+	<insert id="createNotice">
+		INSERT INTO notice(title, content, top, type, writer, writer_login_id)
+		VALUES (#{title}, #{content}, #{top}, #{type}, #{writer}, #{writer_login_id})
+	</insert>
+	<select id="getNotice">
+		select *
+		from notice
+		order by regdate desc limit 1
+	</select>
+</mapper>
