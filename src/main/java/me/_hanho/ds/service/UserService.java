@@ -9,10 +9,10 @@ public interface UserService {
 	User getUser(User user);
 	User getUser(String id);
 	User getUser(Token token);
-
-	int createToken(Token token);
-
-
-
+	
+	Token getToken(Token token);
+	int insertToken(Token token);
+	int updateToken(Token token);
+	
 
 }

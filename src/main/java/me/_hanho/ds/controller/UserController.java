@@ -48,7 +48,18 @@ public class UserController {
 			String refreshToken = tokenService.makeJwtToken(180L);
 			String ipAddress = request.getRemoteAddr();
 			Token token = new Token(refreshToken, agent, ipAddress, checkUser.getLogin_id());
-			int result_count = userService.createToken(token);
+			Token checkToken = userService.getToken(token);
+			int result_count = 0;
+			if(checkToken == null) {
+				result_count = userService.insertToken(token);
+			} else {
+				try {
+					tokenService.parseJwtToken(checkToken.getRefresh_token());
+					result_count = userService.updateToken(token);
+				} catch (Exception e) {
+					result_count = userService.insertToken(token);
+				}
+			}
 			System.out.println(result_count);
 
 			result.put("msg", "success");
@@ -98,7 +109,7 @@ public class UserController {
 				String accessToken = tokenService.makeJwtToken(60L, onlyId);
 				String refreshToken = tokenService.makeJwtToken(180L);
 				Token token2 = new Token(refreshToken, agent, ipAddress, checkUser.getLogin_id());
-				int result_count = userService.createToken(token2);
+				int result_count = userService.updateToken(token2);
 				
 				System.out.println("result_count : " + result_count);
 				

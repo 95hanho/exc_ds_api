@@ -13,10 +13,12 @@
 		SELECT u.* FROM user u 
 		JOIN token t ON u.login_id = t.login_id 
 		WHERE t.refresh_token = #{refresh_token} and t.agent = #{agent} and t.connect_ip = #{connect_ip}
+		order by t.created_at desc limit 1
 	</select>
     <select id="getToken" resultType="Token">
 		SELECT * FROM token 
 		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+		order by created_at desc limit 1
 	</select>
     <insert id="insertToken">
 		INSERT INTO token(refresh_token, agent, connect_ip, login_id) 

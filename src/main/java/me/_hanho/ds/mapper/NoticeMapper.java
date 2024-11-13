@@ -1,7 +1,12 @@
 package me._hanho.ds.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import me._hanho.ds.model.Comment;
 import me._hanho.ds.model.Notice;
 
 @Mapper
@@ -10,5 +15,20 @@ public interface NoticeMapper {
 	int createNotice(Notice notice);
 
 	Notice getNotice();
+	Notice getNotice2(int id);
+
+	int getNoticeCount();
+
+	List<Notice> getNotices(@Param("size") int size, @Param("offset") int offset);
+
+	int noticeUpHit(int id);
+
+	int createComment(Comment comment);
+
+	Comment getComment();
+
+	ArrayList<Comment> getComments(int id);
+
+	int deleteComment(int id);
 
 }

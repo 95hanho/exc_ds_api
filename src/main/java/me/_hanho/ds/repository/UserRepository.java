@@ -22,16 +22,17 @@ public class UserRepository {
 	public User getUser(Token token) {
 		return userMapper.getUser3(token);
 	}
-
-	public int createToken(Token token) {
-		Token checkToken = userMapper.getToken(token);
-		System.out.println(checkToken);
-		if(checkToken == null) {
-			return userMapper.insertToken(token);
-		} else {
-			return userMapper.updateToken(token);
-		}
+	
+	public Token getToken(Token token) {
+		return userMapper.getToken(token);
 	}
+	public int insertToken(Token token) {
+		return userMapper.insertToken(token);
+	}
+	public int updateToken(Token token) {
+		return userMapper.updateToken(token);
+	}
+
 
 
 

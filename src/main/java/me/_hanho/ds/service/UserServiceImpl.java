@@ -25,11 +25,20 @@ public class UserServiceImpl implements UserService {
 	public User getUser(Token token) {
 		return userDAO.getUser(token);
 	}
-
+	
 	@Override
-	public int createToken(Token token) {
-		return userDAO.createToken(token);
+	public Token getToken(Token token) {
+		return userDAO.getToken(token);
 	}
+	@Override
+	public int insertToken(Token token) {
+		return userDAO.insertToken(token);
+	}
+	@Override
+	public int updateToken(Token token) {
+		return userDAO.updateToken(token);
+	}
+
 
 
 

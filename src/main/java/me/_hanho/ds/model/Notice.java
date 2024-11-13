@@ -1,6 +1,7 @@
 package me._hanho.ds.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -22,12 +23,14 @@ public class Notice {
 	private String writer;
 	private String writer_login_id;
 	private Boolean manager_comment_latest;
+	private ArrayList<UploadFile> file_list = new ArrayList<>();
+	private ArrayList<Comment> comment_list = new ArrayList<>();
 	
 	public Notice() {
 	}
-
+	
 	public Notice(int id, String title, String content, Date regdate, int hit, Boolean secret, int top, String type,
-			String writer, String writer_login_id, Boolean manager_comment_latest) {
+		String writer, String writer_login_id, Boolean manager_comment_latest, ArrayList<UploadFile> file_list) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -40,6 +43,26 @@ public class Notice {
 		this.writer = writer;
 		this.writer_login_id = writer_login_id;
 		this.manager_comment_latest = manager_comment_latest;
+		this.file_list = file_list;
+	}
+
+	public Notice(int id, String title, String content, Date regdate, int hit, Boolean secret, int top, String type,
+			String writer, String writer_login_id, Boolean manager_comment_latest, ArrayList<UploadFile> file_list,
+			ArrayList<Comment> comment_list) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.content = content;
+		this.regdate = regdate;
+		this.hit = hit;
+		this.secret = secret;
+		this.top = top;
+		this.type = type;
+		this.writer = writer;
+		this.writer_login_id = writer_login_id;
+		this.manager_comment_latest = manager_comment_latest;
+		this.file_list = file_list;
+		this.comment_list = comment_list;
 	}
 
 	public int getId() {
@@ -129,12 +152,30 @@ public class Notice {
 	public void setManager_comment_latest(Boolean manager_comment_latest) {
 		this.manager_comment_latest = manager_comment_latest;
 	}
+	
+	public ArrayList<UploadFile> getFile_list() {
+		return file_list;
+	}
+
+	public void setFile_list(ArrayList<UploadFile> file_list) {
+		this.file_list = file_list;
+	}
+	
+	public ArrayList<Comment> getComment_list() {
+		return comment_list;
+	}
+
+	public void setComment_list(ArrayList<Comment> comment_list) {
+		this.comment_list = comment_list;
+	}
 
 	@Override
 	public String toString() {
 		return "Notice [id=" + id + ", title=" + title + ", content=" + content + ", regdate=" + regdate + ", hit="
 				+ hit + ", secret=" + secret + ", top=" + top + ", type=" + type + ", writer=" + writer
-				+ ", writer_login_id=" + writer_login_id + ", manager_comment_latest=" + manager_comment_latest + "]";
+				+ ", writer_login_id=" + writer_login_id + ", manager_comment_latest=" + manager_comment_latest
+				+ ", file_list=" + file_list + ", comment_list=" + comment_list + "]";
 	}
+
 	
 }
