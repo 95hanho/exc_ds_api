@@ -17,9 +17,20 @@ public class FileRepository {
 	public int createFile(UploadFile inFile) {
 		return fileMapper.createFile(inFile);
 	}
+	
+	public int updateFile(UploadFile inFile) {
+		return fileMapper.updateFile(inFile);
+	}
+	
+	public int deleteFile(int id) {
+		return fileMapper.deleteFile(id);
+	}
 
 	public ArrayList<UploadFile> getFiles(int id) {
 		return fileMapper.getFiles(id);
 	}
+
+
+
 
 }

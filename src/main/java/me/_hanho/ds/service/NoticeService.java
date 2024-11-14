@@ -9,6 +9,8 @@ import me._hanho.ds.model.Notice;
 public interface NoticeService {
 
 	int createNotice(Notice notice);
+	
+	int updateNotice(Notice notice);
 	// 최신 가져오기
 	Notice getNotice();
 	// 
@@ -18,6 +20,8 @@ public interface NoticeService {
 
 	List<Notice> getNotices(int size, int offset);
 	
+	int deleteNotice(int id);
+	
 	int noticeUpHit(int id);
 	
 	int createComment(Comment comment);
@@ -26,7 +30,11 @@ public interface NoticeService {
 	
 	ArrayList<Comment> getComments(int id);
 	
-	int deleteComment(int id);
+	int updateComment(Comment comment);
 	
+	int deleteComment(int id);
+	// 관리자 답변 대기중 변경
+	int updateNoticeManagerLatest(int id, boolean status);
+
 
 }

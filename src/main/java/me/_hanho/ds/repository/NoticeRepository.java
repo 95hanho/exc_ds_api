@@ -19,6 +19,10 @@ public class NoticeRepository {
 	public int createNotice(Notice notice) {
 		return noticeMapper.createNotice(notice);
 	}
+
+	public int updateNotice(Notice notice) {
+		return noticeMapper.updateNotice(notice);
+	}
 	
 	public Notice getNotice() {
 		return noticeMapper.getNotice();
@@ -33,6 +37,10 @@ public class NoticeRepository {
 
 	public List<Notice> getNotices(int size, int offset) {
 		return noticeMapper.getNotices(size, offset);
+	}
+	
+	public int deleteNotice(int id) {
+		return noticeMapper.deleteNotice(id);
 	}
 
 	public int noticeUpHit(int id) {
@@ -50,11 +58,18 @@ public class NoticeRepository {
 	public ArrayList<Comment> getComments(int id) {
 		return noticeMapper.getComments(id);
 	}
+	
+	public int updateComment(Comment comment) {
+		return noticeMapper.updateComment(comment);
+	}
 
 	public int deleteComment(int id) {
 		return noticeMapper.deleteComment(id);
 	}
 
+	public int updateNoticeManagerLatest(int id, boolean status) {
+		return noticeMapper.updateNoticeManagerLatest(id, status);
+	}
 
 
 	

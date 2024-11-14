@@ -13,6 +13,7 @@ public class UploadFile {
 	@Id
 	private int file_num;
 	private String name;
+	private String fileName;
 	private Date create_at;
 	private int notice_id;
 	private String url;
@@ -30,6 +31,16 @@ public class UploadFile {
 		super();
 		this.file_num = file_num;
 		this.name = name;
+		this.create_at = create_at;
+		this.notice_id = notice_id;
+		this.url = url;
+	}
+	
+	public UploadFile(int file_num, String name, String fileName, Date create_at, int notice_id, String url) {
+		super();
+		this.file_num = file_num;
+		this.name = name;
+		this.fileName = fileName;
 		this.create_at = create_at;
 		this.notice_id = notice_id;
 		this.url = url;
@@ -74,12 +85,21 @@ public class UploadFile {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 	@Override
 	public String toString() {
-		return "UploadFile [file_num=" + file_num + ", name=" + name + ", create_at=" + create_at + ", notice_id="
-				+ notice_id + ", url=" + url + "]";
+		return "UploadFile [file_num=" + file_num + ", name=" + name + ", fileName=" + fileName + ", create_at="
+				+ create_at + ", notice_id=" + notice_id + ", url=" + url + "]";
 	}
-	
 	
 }

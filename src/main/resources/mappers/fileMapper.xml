@@ -2,9 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
 <mapper namespace="me._hanho.ds.mapper.FileMapper">
 	<insert id="createFile">
-		INSERT INTO file(name, notice_id)
-		VALUES (#{name}, #{notice_id})
+		INSERT INTO file(name, fileName, notice_id)
+		VALUES (#{name}, #{fileName}, #{notice_id})
 	</insert>
+	<update id="updateFile">
+		UPDATE file
+		SET name = #{name}, fileName = #{fileName}
+		WHERE notice_id = #{notice_id}
+	</update>
+	<delete id="deleteFile">
+		DELETE FROM file
+		WHERE notice_id = #{id}
+	</delete>
 	<select id="getFiles">
 		SELECT * FROM file
 		WHERE notice_id = #{id}

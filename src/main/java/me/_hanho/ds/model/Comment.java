@@ -18,21 +18,12 @@ public class Comment {
 	private String writer_login_id;
 	private Date regdate;
 	private int notice_id;
+	private int talktalk_id;
 	
 	public Comment() {
 		// TODO Auto-generated constructor stub
 	}
-
-	public Comment(int id, String content, String writer, String writer_login_id, Date regdate, int notice_id) {
-		super();
-		this.id = id;
-		this.content = content;
-		this.writer = writer;
-		this.writer_login_id = writer_login_id;
-		this.regdate = regdate;
-		this.notice_id = notice_id;
-	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -80,11 +71,20 @@ public class Comment {
 	public void setNotice_id(int notice_id) {
 		this.notice_id = notice_id;
 	}
+	
+	public int getTalktalk_id() {
+		return talktalk_id;
+	}
+
+	public void setTalktalk_id(int talktalk_id) {
+		this.talktalk_id = talktalk_id;
+	}
 
 	@Override
 	public String toString() {
 		return "Comment [id=" + id + ", content=" + content + ", writer=" + writer + ", writer_login_id="
-				+ writer_login_id + ", regdate=" + regdate + ", notice_id=" + notice_id + "]";
+				+ writer_login_id + ", regdate=" + regdate + ", notice_id=" + notice_id + ", talktalk_id=" + talktalk_id
+				+ "]";
 	}
 
 	

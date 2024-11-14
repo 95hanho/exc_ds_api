@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.ProgramMapper">
+	<select id="getPrograms">
+		SELECT *
+		FROM program
+	</select>
+	<select id="getPrograms2">
+		SELECT * 
+		FROM program
+		WHERE category_num = #{category_num}
+	</select>
+	<select id="getProgramCategory">
+		SELECT *
+		FROM program_category;
+	</select>
+	<select id="getProgramAndCategory">
+		SELECT program_name, pc.title AS category_name, category_bg_url, time, place, program_content
+		FROM program p
+		JOIN program_category pc ON p.category_num = pc.cate_num
+		WHERE program_code = #{program_code}
+	</select>
+</mapper>

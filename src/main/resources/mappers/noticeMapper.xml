@@ -5,6 +5,11 @@
 		INSERT INTO notice(title, content, secret, top, type, writer, writer_login_id)
 		VALUES (#{title}, #{content}, #{secret}, #{top}, #{type}, #{writer}, #{writer_login_id})
 	</insert>
+	<update id="updateNotice">
+		UPDATE notice 
+		SET title = #{title}, content = #{content}, secret = #{secret}
+		WHERE id = #{id} and writer_login_id = #{writer_login_id}
+	</update>
 	<select id="getNotice">
 		select *
 		from notice
@@ -27,6 +32,10 @@
         id DESC
     	LIMIT #{size} OFFSET #{offset}
 	</select>
+	<delete id="deleteNotice">
+		DELETE FROM notice
+		WHERE id = #{id}
+	</delete>
 	<update id="noticeUpHit">
 		update notice
 		set hit = hit + 1
@@ -47,8 +56,18 @@
 		where notice_id = #{id}
 		ORDER BY id
 	</select>
+	<update id="updateComment">
+		UPDATE comment
+		SET content = #{content}
+		WHERE id = #{id}
+	</update>
 	<delete id="deleteComment">
 		DELETE FROM comment
 		WHERE id = #{id}
 	</delete>
+	<update id="updateNoticeManagerLatest">
+		UPDATE notice
+		SET manager_comment_latest = #{status}
+		WHERE id = #{id}
+	</update>
 </mapper>

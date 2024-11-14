@@ -126,6 +126,51 @@ public class NoticeController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
+	// 공지QnA 수정
+	@PutMapping("/write")
+	public ResponseEntity<Map<String, Object>> updateNoticeQna(@ModelAttribute Notice notice
+			, @RequestAttribute("login_id") String login_id) {
+		System.out.println("updateNoticeQna");
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		User user = userService.getUser(login_id);
+		notice.setWriter_login_id(login_id);
+		notice.setWriter(user.getName());
+		if(user.getGrant() == 90) {
+			notice.setType("G");
+			notice.setTop(1);
+		} else {
+			notice.setType("N");
+			notice.setTop(0);
+		}
+		System.out.println(notice);
+		
+		int update_count = noticeService.updateNotice(notice);
+		
+		Notice curNotice = noticeService.getNotice(notice.getId());
+		
+		if(update_count > 0) {
+			result.put("data", curNotice);
+			result.put("msg", "success");
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
+	}
+	// 공지QnA 삭제
+	@DeleteMapping("/write/{id}")
+	public ResponseEntity<Map<String, Object>> deleteNoticeQna(@PathVariable("id") int id) {
+		System.out.println("deleteNoticeQna");
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		int delete_result = noticeService.deleteNotice(id);
+		
+		System.out.println(delete_result);
+		
+		result.put("msg", "success");
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 	// 공지QnA 파일업로드
 	@PostMapping("/file")
 	public ResponseEntity<Map<String, Object>> noticeFileUpload(@RequestParam(value="file", required=false) MultipartFile file
@@ -144,28 +189,25 @@ public class NoticeController {
 			result.put("msg", "fail");
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
-		
-	}
-	// 공지QnA 수정
-	@PutMapping("/write")
-	public ResponseEntity<Map<String, Object>> updateNoticeQna() { 
-		System.out.println("updateNoticeQna");
-		Map<String, Object> result = new HashMap<String, Object>();
-		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 공지QnA 파일삭제요청
 	@DeleteMapping("/file/{id}")
-	public ResponseEntity<Map<String, Object>> noticeFileDelete() {
+	public ResponseEntity<Map<String, Object>> noticeFileDelete(@PathVariable("id") int id) {
 		System.out.println("noticeFileDelete");
 		Map<String, Object> result = new HashMap<String, Object>();
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	// 공지QnA 삭제
-	@DeleteMapping("/write/{id}")
-	public ResponseEntity<Map<String, Object>> deleteNoticeQna() {
-		System.out.println("deleteNoticeQna");
-		Map<String, Object> result = new HashMap<String, Object>();
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		
+		ArrayList<UploadFile> file_list = fileService.getFiles(id);
+		
+		int delete_result = fileService.deleteFile(id, file_list.get(0));
+		
+		if(delete_result > 0) {
+			result.put("msg", "success");
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	// 공지/QnA 조회수
 	@PutMapping("/detail/count/{id}")
@@ -194,6 +236,7 @@ public class NoticeController {
 		int create_result = noticeService.createComment(comment);
 		
 		Comment res_comment = noticeService.getComment();
+		noticeService.updateNoticeManagerLatest(res_comment.getNotice_id(), user.getGrant() == 90);
 		
 		System.out.println(res_comment);
 		
@@ -209,6 +252,11 @@ public class NoticeController {
 		
 		System.out.println(comment);
 		
+		int update_result = noticeService.updateComment(comment);
+		
+		System.out.println(update_result);
+		
+		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 답글 삭제

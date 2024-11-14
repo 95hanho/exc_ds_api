@@ -11,7 +11,7 @@
     </select>
     <select id="getUser3">
 		SELECT u.* FROM user u 
-		JOIN token t ON u.login_id = t.login_id 
+		JOIN token t ON u.login_id = t.login_id
 		WHERE t.refresh_token = #{refresh_token} and t.agent = #{agent} and t.connect_ip = #{connect_ip}
 		order by t.created_at desc limit 1
 	</select>

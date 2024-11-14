@@ -11,6 +11,10 @@ public interface FileMapper {
 
 	int createFile(UploadFile inFile);
 
+	int updateFile(UploadFile inFile);
+
+	int deleteFile(int id);
+
 	ArrayList<UploadFile> getFiles(int id);
 
 }

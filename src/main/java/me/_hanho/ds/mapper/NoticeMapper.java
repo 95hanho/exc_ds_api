@@ -13,6 +13,8 @@ import me._hanho.ds.model.Notice;
 public interface NoticeMapper {
 
 	int createNotice(Notice notice);
+	
+	int updateNotice(Notice notice);
 
 	Notice getNotice();
 	Notice getNotice2(int id);
@@ -20,6 +22,8 @@ public interface NoticeMapper {
 	int getNoticeCount();
 
 	List<Notice> getNotices(@Param("size") int size, @Param("offset") int offset);
+	
+	int deleteNotice(int id);
 
 	int noticeUpHit(int id);
 
@@ -28,7 +32,15 @@ public interface NoticeMapper {
 	Comment getComment();
 
 	ArrayList<Comment> getComments(int id);
+	
+	int updateComment(Comment comment);
 
 	int deleteComment(int id);
+
+	int updateNoticeManagerLatest(@Param("id") int id, @Param("status") boolean status);
+
+
+
+
 
 }

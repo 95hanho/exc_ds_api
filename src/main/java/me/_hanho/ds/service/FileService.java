@@ -9,6 +9,8 @@ import me._hanho.ds.model.UploadFile;
 public interface FileService {
 
 	int createFile(UploadFile inFile, MultipartFile file);
+	
+	int deleteFile(int id, UploadFile uploadFile);
 
 	ArrayList<UploadFile> getFiles(int id);
 
