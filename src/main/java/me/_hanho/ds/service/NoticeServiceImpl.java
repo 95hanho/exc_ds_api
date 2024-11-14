@@ -48,6 +48,11 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 	
 	@Override
+	public ArrayList<Notice> getNoticesLatest() {
+		return noticeDAO.getNoticesLatest();
+	}
+	
+	@Override
 	public int deleteNotice(int id) {
 		return noticeDAO.deleteNotice(id);
 	}
@@ -86,6 +91,8 @@ public class NoticeServiceImpl implements NoticeService {
 	public int updateNoticeManagerLatest(int id, boolean status) {
 		return noticeDAO.updateNoticeManagerLatest(id, status);
 	}
+
+
 
 
 }

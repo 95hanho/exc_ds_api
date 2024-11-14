@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.ScheduleMapper">
+	<select id="getSchedules">
+		select schedule_code, schedule_enrol_start_date, schedule_enrol_end_date, 
+		schedule_start_date, schedule_start_date_add_date,  
+		JSON_EXTRACT(schedule_after_date, '$[0]') AS schedule_after_date, title, time, online, 
+		part_type, enrol_limit, enrol_count, my_enrol_status, schedule_status, schedule_group_num, 
+		program_code, 
+		from schedule s
+		JOIN program p ON p.program_num = s.program_num
+		ORDER BY schedule_start_date DESC
+	</select>
+</mapper>

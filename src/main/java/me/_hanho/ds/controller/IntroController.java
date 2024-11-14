@@ -51,7 +51,7 @@ public class IntroController {
 		
 		data_infoResult.put("categroy_name", program.getCategory_name());
 		data_infoResult.put("categroy_bg_url", program.getCategory_bg_url());
-		data_infoResult.put("time", program.getTime());
+		data_infoResult.put("time", program.getTime() + "H " + program.getTime_ment());
 		data_infoResult.put("place", program.getPlace());
 		dataResult.put("program_meta_info", data_infoResult);
 		dataResult.put("program_content", program.getProgram_content());

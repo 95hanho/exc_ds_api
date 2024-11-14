@@ -6,10 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +21,8 @@ import me._hanho.ds.service.TokenService;
 import me._hanho.ds.service.UserService;
 
 @RestController
-@RequestMapping("/")
-public class UserController {
+@RequestMapping("/v1/auth")
+public class AuthController {
 	
 	@Autowired
 	private UserService userService;
@@ -33,7 +31,7 @@ public class UserController {
 	private TokenService tokenService;
 
 	// 로그인
-	@PostMapping("/v1/auth/login-old")
+	@PostMapping("/login-old")
 	public ResponseEntity<Map<String, Object>> login(@ModelAttribute User user, @RequestHeader("user-agent") String agent
 			, HttpServletRequest request) {
 		System.out.println("login");
@@ -83,7 +81,7 @@ public class UserController {
 			
 	}
 	// 토큰 리프레쉬
-	@PostMapping("/v1/auth/regenerator/refresh")
+	@PostMapping("/regenerator/refresh")
 	public ResponseEntity<Map<String, Object>> tokenRefresh(@RequestParam("refresh_token") String refresh_token
 			, @RequestHeader("user-agent") String agent, HttpServletRequest request) {
 		System.out.println("tokenRefresh");
@@ -128,25 +126,6 @@ public class UserController {
 				result.put("msg", "token제대로 안됨");
 				return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 			}
-		} else {
-			result.put("msg", "token제대로 안됨");
-			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
-		}
-		
-	}
-	// 유저정보가져오기
-	@GetMapping("/v1/member/info")
-	public ResponseEntity<Map<String, Object>> getUserInfo(@RequestAttribute("login_id") String login_id) {
-		System.out.println("getUserInfo");
-		Map<String, Object> result = new HashMap<String, Object>();
-		
-		System.out.println("param login_id : " + login_id);
-		
-		if(login_id != null) {
-			User user = userService.getUser(login_id);
-			result.put("msg", "success");
-			result.put("data", user);
-			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			result.put("msg", "token제대로 안됨");
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);

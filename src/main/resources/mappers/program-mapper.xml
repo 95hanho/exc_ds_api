@@ -15,7 +15,7 @@
 		FROM program_category;
 	</select>
 	<select id="getProgramAndCategory">
-		SELECT program_name, pc.title AS category_name, category_bg_url, time, place, program_content
+		SELECT program_name, title AS category_name, category_bg_url, time, time_ment, place, program_content
 		FROM program p
 		JOIN program_category pc ON p.category_num = pc.cate_num
 		WHERE program_code = #{program_code}

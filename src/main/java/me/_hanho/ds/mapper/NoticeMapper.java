@@ -23,6 +23,8 @@ public interface NoticeMapper {
 
 	List<Notice> getNotices(@Param("size") int size, @Param("offset") int offset);
 	
+	ArrayList<Notice> getNoticesLatest();
+	
 	int deleteNotice(int id);
 
 	int noticeUpHit(int id);
@@ -38,9 +40,5 @@ public interface NoticeMapper {
 	int deleteComment(int id);
 
 	int updateNoticeManagerLatest(@Param("id") int id, @Param("status") boolean status);
-
-
-
-
 
 }

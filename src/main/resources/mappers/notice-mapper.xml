@@ -32,6 +32,13 @@
         id DESC
     	LIMIT #{size} OFFSET #{offset}
 	</select>
+	<select id="getNoticesLatest">
+		SELECT *
+    	FROM notice
+    	WHERE type = 'G'
+    	ORDER BY id DESC
+    	LIMIT 4
+	</select>
 	<delete id="deleteNotice">
 		DELETE FROM notice
 		WHERE id = #{id}

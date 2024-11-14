@@ -39,6 +39,10 @@ public class NoticeRepository {
 		return noticeMapper.getNotices(size, offset);
 	}
 	
+	public ArrayList<Notice> getNoticesLatest() {
+		return noticeMapper.getNoticesLatest();
+	}
+	
 	public int deleteNotice(int id) {
 		return noticeMapper.deleteNotice(id);
 	}
@@ -70,6 +74,7 @@ public class NoticeRepository {
 	public int updateNoticeManagerLatest(int id, boolean status) {
 		return noticeMapper.updateNoticeManagerLatest(id, status);
 	}
+
 
 
 	

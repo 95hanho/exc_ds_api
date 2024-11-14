@@ -3,6 +3,8 @@ package me._hanho.ds.model;
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -11,6 +13,7 @@ import jakarta.persistence.Table;
 public class ProgramCategory {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int cate_num;
 	private String title;
 	private String color;
@@ -20,6 +23,7 @@ public class ProgramCategory {
 	
 	public ProgramCategory() {
 		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ProgramCategory(int cate_num, String title, String color, String category_bg_url, ArrayList<Program> list) {

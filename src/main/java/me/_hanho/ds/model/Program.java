@@ -1,6 +1,8 @@
 package me._hanho.ds.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -9,6 +11,7 @@ import jakarta.persistence.Table;
 public class Program {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int program_num;
 	private String program_code;
 	private String program_name;
@@ -16,20 +19,22 @@ public class Program {
 	private String program_header_img_url_v2;
 	private String program_new_label;
 	private String program_hash_tag;
-	private int category_num;
-	
-	private String category_name;
-	private String category_bg_url;
-	private String time;
+	private Object time;
+	private String time_ment;
 	private String place;
 	private String program_content;
+	
+	private int category_num;
+	private String category_name;
+	private String category_bg_url;
 	
 	public Program() {
 	}
 
 	public Program(int program_num, String program_code, String program_name, String program_status,
-			String program_header_img_url_v2, String program_new_label, String program_hash_tag, int category_num,
-			String category_name, String category_bg_url, String time, String place, String program_content) {
+			String program_header_img_url_v2, String program_new_label, String program_hash_tag, Object time,
+			String time_ment, String place, String program_content, int category_num, String category_name,
+			String category_bg_url) {
 		super();
 		this.program_num = program_num;
 		this.program_code = program_code;
@@ -38,13 +43,16 @@ public class Program {
 		this.program_header_img_url_v2 = program_header_img_url_v2;
 		this.program_new_label = program_new_label;
 		this.program_hash_tag = program_hash_tag;
+		this.time = time;
+		this.time_ment = time_ment;
+		this.place = place;
+		this.program_content = program_content;
 		this.category_num = category_num;
 		this.category_name = category_name;
 		this.category_bg_url = category_bg_url;
-		this.time = time;
-		this.place = place;
-		this.program_content = program_content;
 	}
+
+
 
 	public int getProgram_num() {
 		return program_num;
@@ -102,37 +110,20 @@ public class Program {
 		this.program_hash_tag = program_hash_tag;
 	}
 
-	public int getCategory_num() {
-		return category_num;
-	}
-
-	public void setCategory_num(int category_num) {
-		this.category_num = category_num;
-	}
-
-	public String getCategory_name() {
-		return category_name;
-	}
-
-	public void setCategory_name(String category_name) {
-		this.category_name = category_name;
-	}
-	
-
-	public String getCategory_bg_url() {
-		return category_bg_url;
-	}
-
-	public void setCategory_bg_url(String category_bg_url) {
-		this.category_bg_url = category_bg_url;
-	}
-
-	public String getTime() {
+	public Object getTime() {
 		return time;
 	}
 
-	public void setTime(String time) {
+	public void setTime(Object time) {
 		this.time = time;
+	}
+
+	public String getTime_ment() {
+		return time_ment;
+	}
+
+	public void setTime_ment(String time_ment) {
+		this.time_ment = time_ment;
 	}
 
 	public String getPlace() {
@@ -151,14 +142,38 @@ public class Program {
 		this.program_content = program_content;
 	}
 
+	public int getCategory_num() {
+		return category_num;
+	}
+
+	public void setCategory_num(int category_num) {
+		this.category_num = category_num;
+	}
+
+	public String getCategory_name() {
+		return category_name;
+	}
+
+	public void setCategory_name(String category_name) {
+		this.category_name = category_name;
+	}
+
+	public String getCategory_bg_url() {
+		return category_bg_url;
+	}
+
+	public void setCategory_bg_url(String category_bg_url) {
+		this.category_bg_url = category_bg_url;
+	}
+
 	@Override
 	public String toString() {
 		return "Program [program_num=" + program_num + ", program_code=" + program_code + ", program_name="
 				+ program_name + ", program_status=" + program_status + ", program_header_img_url_v2="
 				+ program_header_img_url_v2 + ", program_new_label=" + program_new_label + ", program_hash_tag="
-				+ program_hash_tag + ", category_num=" + category_num + ", category_name=" + category_name
-				+ ", category_bg_url=" + category_bg_url + ", time=" + time + ", place=" + place + ", program_content="
-				+ program_content + "]";
+				+ program_hash_tag + ", time=" + time + ", time_ment=" + time_ment + ", place=" + place
+				+ ", program_content=" + program_content + ", category_num=" + category_num + ", category_name="
+				+ category_name + ", category_bg_url=" + category_bg_url + "]";
 	}
 
 }

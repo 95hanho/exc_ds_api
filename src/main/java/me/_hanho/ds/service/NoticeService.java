@@ -20,6 +20,8 @@ public interface NoticeService {
 
 	List<Notice> getNotices(int size, int offset);
 	
+	ArrayList<Notice> getNoticesLatest();
+	
 	int deleteNotice(int id);
 	
 	int noticeUpHit(int id);
@@ -35,6 +37,8 @@ public interface NoticeService {
 	int deleteComment(int id);
 	// 관리자 답변 대기중 변경
 	int updateNoticeManagerLatest(int id, boolean status);
+
+	
 
 
 }
