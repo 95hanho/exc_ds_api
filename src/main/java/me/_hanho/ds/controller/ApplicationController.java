@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.service.ScheduleService;
 
@@ -26,11 +28,16 @@ public class ApplicationController {
 
 	// 프로그램조회
 	@GetMapping("/{month}")
-	public ResponseEntity<Map<String, Object>> getSchedules(@PathVariable("month") String month) {
+	public ResponseEntity<Map<String, Object>> getSchedules(@PathVariable("month") String month,
+			@RequestAttribute("login_id") String login_id) {
 		System.out.println("getSchedules");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		ArrayList<Schedule> schedule_list = scheduleService.getSchedules();
+		ArrayList<Schedule> schedule_list = scheduleService.getSchedules(login_id);
+		
+		for(Schedule schedule : schedule_list) {
+			System.out.println(schedule);
+		}
 		
 		result.put("data", schedule_list);
 		result.put("msg", "success");
@@ -38,11 +45,24 @@ public class ApplicationController {
 	}
 	// 프로그램신청(수강신청)
 	@PostMapping
-	public ResponseEntity<Map<String, Object>> programApply(@RequestAttribute("schedule_code") String schedule_code) {
+	public ResponseEntity<Map<String, Object>> programApply(@RequestParam("schedule_code") String schedule_code,
+			@RequestAttribute("login_id") String login_id) {
 		System.out.println("programApply");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		result.put("msg", "success");
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		int create_result = scheduleService.createEnroll(schedule_code, login_id);
+		
+		if(create_result > 0) {
+			Schedule schedule = scheduleService.getSchedule(schedule_code, login_id);
+			
+			System.out.println(schedule);
+			
+			result.put("schedule_info", schedule);
+			result.put("msg", "success");
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
 	}
 }

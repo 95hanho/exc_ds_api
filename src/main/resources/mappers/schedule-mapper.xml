@@ -2,13 +2,75 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
 <mapper namespace="me._hanho.ds.mapper.ScheduleMapper">
 	<select id="getSchedules">
-		select schedule_code, schedule_enrol_start_date, schedule_enrol_end_date, 
-		schedule_start_date, schedule_start_date_add_date,  
-		JSON_EXTRACT(schedule_after_date, '$[0]') AS schedule_after_date, title, time, online, 
-		part_type, enrol_limit, enrol_count, my_enrol_status, schedule_status, schedule_group_num, 
-		program_code, 
-		from schedule s
+		SELECT 
+		    s.schedule_code,
+		    s.schedule_enrol_start_date,
+		    s.schedule_enrol_end_date,
+		    s.schedule_start_date,
+		    s.schedule_start_date_add_date,
+		    JSON_UNQUOTE(JSON_EXTRACT(s.schedule_after_date, '$')) AS schedule_after_date_JSON,
+		    p.program_name AS title,
+		    p.time,
+		    s.online,
+		    s.part_type,
+		    s.enrol_limit,
+		    s.enrol_count,
+		    s.schedule_status,
+		    s.schedule_group_num,
+		    p.program_code,
+		    pc.title AS group_title,
+		    CASE 
+		        WHEN e.login_id IS NOT NULL THEN 1
+		        ELSE 0
+		    END AS my_enrol_status
+		FROM schedule s
 		JOIN program p ON p.program_num = s.program_num
-		ORDER BY schedule_start_date DESC
+		JOIN program_category pc ON p.category_num = pc.cate_num
+		LEFT JOIN enroll e ON e.s_id = s.s_id AND e.login_id = #{login_id}
+		ORDER BY s.schedule_start_date DESC;
+	</select>
+	<select id="getSchedule">
+		SELECT 
+		    s.schedule_code,
+		    s.schedule_enrol_start_date,
+		    s.schedule_enrol_end_date,
+		    s.schedule_start_date,
+		    s.schedule_start_date_add_date,
+		    JSON_UNQUOTE(JSON_EXTRACT(s.schedule_after_date, '$')) AS schedule_after_date_JSON,
+		    p.program_name AS title,
+		    p.time,
+		    s.online,
+		    s.part_type,
+		    s.enrol_limit,
+		    s.enrol_count,
+		    s.schedule_status,
+		    s.schedule_group_num,
+		    p.program_code,
+		    pc.title AS group_title,
+		    CASE 
+		        WHEN e.login_id IS NOT NULL THEN 1
+		        ELSE 0
+		    END AS my_enrol_status
+		FROM schedule s
+		JOIN program p ON p.program_num = s.program_num
+		JOIN program_category pc ON p.category_num = pc.cate_num
+		LEFT JOIN enroll e ON e.s_id = s.s_id AND e.login_id = #{login_id}
+		WHERE schedule_code = #{schedule_code}
+	</select>
+	<update id="upEnrol_count">
+		UPDATE schedule
+		SET enrol_count = enrol_count + 1
+		WHERE schedule_code = #{schedule_code}
+	</update>
+	<insert id="createEnroll">
+		INSERT INTO enroll(enrol_waiting_rank, s_id, login_id)
+		VALUES (#{rank}, (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}), #{login_id})
+	</insert>
+	<select id="getEnrolls">
+		SELECT schedule_code, schedule_start_date, enrol_id, program_name AS title, enrol_waiting_rank
+		FROM enroll e
+		JOIN schedule s ON s.s_id = e.s_id
+		JOIN program p ON p.program_num = s.program_num
+		WHERE login_id = #{login_id}
 	</select>
 </mapper>

@@ -1,6 +1,8 @@
 package me._hanho.ds.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.User;
+import me._hanho.ds.service.ScheduleService;
 import me._hanho.ds.service.UserService;
 
 @RestController
@@ -21,6 +25,9 @@ public class MemberController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ScheduleService scheduleService;
 	
 	// 유저정보가져오기
 	@GetMapping("/info")
@@ -47,6 +54,12 @@ public class MemberController {
 		System.out.println("myApplication");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
+		ArrayList<Enroll> enroll_list = scheduleService.getEnrolls(login_id);
+		
+		Map<String, Object> dataResult = new HashMap<String, Object>();
+		dataResult.put("new_list", enroll_list);
+		dataResult.put("old_list", new ArrayList<>());
+		result.put("data", dataResult);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -56,6 +69,15 @@ public class MemberController {
 		System.out.println("applyCancelList");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
+		List<String> cancel_list = new ArrayList<>();
+		cancel_list.add("급한 업무 및 회의");
+		cancel_list.add("동일 과정 다른 날짜로 변경");
+		cancel_list.add("본인 코로나 양성 판정(자가진단~PCR)");
+		cancel_list.add("가족/동료 코로나 확진으로 인한 검사 실시");
+		cancel_list.add("정원미달로 인한 폐강");
+		cancel_list.add("개인 사정 및 기타");
+		
+		result.put("data", cancel_list);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
