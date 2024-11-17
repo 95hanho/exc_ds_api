@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.ScheduleService;
@@ -82,13 +84,22 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 수강신청취소
-	@PutMapping("/member/application")
-	public ResponseEntity<Map<String, Object>> applyCancel(@RequestAttribute("login_id") String login_id) {
+	@PutMapping("/application")
+	public ResponseEntity<Map<String, Object>> applyCancel(@ModelAttribute CancelLog cancel_log,
+			@RequestAttribute("login_id") String login_id) {
 		System.out.println("applyCancel");
 		Map<String, Object> result = new HashMap<String, Object>();
+		cancel_log.setLogin_id(login_id);
 		
-		result.put("msg", "success");
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		try {
+			scheduleService.deleteEnroll(cancel_log);
+			result.put("msg", "success");
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 }

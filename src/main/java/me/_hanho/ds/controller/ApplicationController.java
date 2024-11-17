@@ -50,9 +50,9 @@ public class ApplicationController {
 		System.out.println("programApply");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		int create_result = scheduleService.createEnroll(schedule_code, login_id);
-		
-		if(create_result > 0) {
+		try {
+			scheduleService.createEnroll(schedule_code, login_id);
+			
 			Schedule schedule = scheduleService.getSchedule(schedule_code, login_id);
 			
 			System.out.println(schedule);
@@ -60,9 +60,10 @@ public class ApplicationController {
 			result.put("schedule_info", schedule);
 			result.put("msg", "success");
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
+		} catch (Exception e) {
 			result.put("msg", "fail");
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
+		
 	}
 }
