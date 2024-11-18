@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import me._hanho.ds.mapper.AdminMapper;
+import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Schedule;
+import me._hanho.ds.model.User;
 import me._hanho.ds.util.JsonUtils;
 
 @Repository
@@ -46,6 +48,48 @@ public class AdminRepository {
 		} else if(type.equals("OPEN_STATUS")) {
 			adminMapper.updateScheduleOpenStatus(schedule_codes);
 		}
+	}
+
+	public ArrayList<Enroll> getAdminStudents(String schedule_code) {
+		int confirmed_index = 1;
+		int wait_index = 1;
+		ArrayList<Enroll> student_list = adminMapper.getAdminStudents(schedule_code);
+		for(Enroll student : student_list) {
+			if(!student.getEnrol_waiting_status()) {
+				student.setEnrol_rank(confirmed_index);
+				confirmed_index++;
+			} else {
+				student.setEnrol_rank(wait_index);
+				wait_index++;
+			}
+			
+		}
+		return student_list;
+	}
+
+	public void updatePresent(List<String> member_no, String schedule_code, String type, String description) {
+		String msg = "";
+		if(type.equals("Y")) {
+			msg = "수료";
+		} else if(type.equals("N")) {
+			msg = "미수료";
+		} else if(type.equals("T")) {
+			msg = "지각";
+		}
+		adminMapper.updatePresent(member_no, schedule_code, type, description, msg);
+	}
+
+	public void updateStudent(int enroll_id, String member_no) {
+		adminMapper.updateStudent(enroll_id, member_no);
+	}
+
+	public List<User> userSearch(String type, String keyword) {
+		if(type.equals("hp")) {
+			type = "member_hp";
+		} else if(type.equals("insa_number")) {
+			type = "member_insa_number";
+		}
+		return adminMapper.userSearch(type, keyword);
 	}
 
 

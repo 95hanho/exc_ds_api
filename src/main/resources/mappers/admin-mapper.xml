@@ -83,6 +83,48 @@
 	        #{schedule_code}
 	    </foreach>
 	</update>
+	<select id="getAdminStudents">
+		SELECT enrol_id, e.created_at AS enrol_regdate, <!-- enrol_rank -->
+		CASE WHEN enrol_waiting_rank > 0 THEN true ELSE false END AS enrol_waiting_status,
+		attendance_type, attendance_msg, attendance_description,
+		member_email, member_hp, member_insa_number, member_no, member_type, team_name,
+		e.login_id AS member_login_id, u.name AS member_name
+		FROM enroll e
+		JOIN user u ON e.login_id = u.login_id
+		WHERE s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code})
+		ORDER BY 
+	    CASE WHEN enrol_waiting_rank > 0 THEN 1 ELSE 0 END ASC, 
+	    e.created_at ASC;
+	</select>
+	<update id="updatePresent">
+		UPDATE enroll
+		SET attendance_type = #{type}, attendance_msg = #{msg}, attendance_description = #{description}
+		WHERE s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code})
+		AND login_id IN
+	    <foreach item="member_no" index="index" collection="member_nos" open="(" separator="," close=")">
+	        (SELECT login_id FROM user WHERE member_no = #{member_no})
+	    </foreach>
+	</update>
+	<update id="updateStudent">
+		UPDATE enroll
+		SET login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		WHERE enrol_id = #{enroll_id}
+	</update>
+	<select id="userSearch">
+		SELECT login_id AS member_login_id, name AS member_name, member_no, member_type, member_hp,
+		member_insa_number, team_name
+		FROM user
+		WHERE 
+			CASE 
+	        WHEN #{type} = 'login_id' THEN login_id LIKE CONCAT('%', #{keyword}, '%')
+	        WHEN #{type} = 'name' THEN name LIKE CONCAT('%', #{keyword}, '%')
+	        WHEN #{type} = 'member_hp' THEN member_hp LIKE CONCAT('%', #{keyword}, '%')
+	        WHEN #{type} = 'member_insa_number' THEN member_insa_number LIKE CONCAT('%', #{keyword}, '%')
+	        ELSE FALSE
+	    END;
+	</select>
+	
+	
 	
 	<select id="getSchedule">
 		SELECT 

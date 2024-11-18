@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.AdminService;
@@ -95,25 +96,34 @@ public class AdminController {
 		System.out.println("getAdminAppStudents");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-//		ArrayList<User> student_list = getAdminStudents(schedule_code);
+		ArrayList<Enroll> student_list = adminService.getAdminStudents(schedule_code);
 
+		result.put("enrol_final_status", true);
+		result.put("schedule_info", student_list);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 출결변경
 	@PostMapping("/attendance/info")
-	public ResponseEntity<Map<String, Object>> setPresent() {
+	public ResponseEntity<Map<String, Object>> setPresent(@RequestParam("member_no") List<String> member_no,
+			@RequestParam("schedule_code") String schedule_code, @RequestParam("type") String type,
+			@RequestParam(value = "description", defaultValue = "") String description) {
 		System.out.println("setPresent");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		adminService.updatePresent(member_no, schedule_code, type, description);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 관리자 수강신청자 변경
 	@PutMapping("/user/enrollment")
-	public ResponseEntity<Map<String, Object>> setEnrollStudent() {
+	public ResponseEntity<Map<String, Object>> setEnrollStudent(@RequestParam("enroll_id") int enroll_id,
+			@RequestParam("to_member_no") String member_no) {
 		System.out.println("setEnrollStudent");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		adminService.updateStudent(enroll_id, member_no);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -130,10 +140,14 @@ public class AdminController {
 //	/*  */
 	// 유저 검색
 	@GetMapping("/member/search")
-	public ResponseEntity<Map<String, Object>> getStudentsSearch() {
+	public ResponseEntity<Map<String, Object>> getStudentsSearch(@RequestParam("type") String type,
+			@RequestParam("keyword") String keyword) {
 		System.out.println("getStudentsSearch");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<User> user_list = adminService.userSearch(type, keyword);
 
+		result.put("data", user_list);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
