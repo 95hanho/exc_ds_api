@@ -95,7 +95,7 @@ public class AdminController {
 		System.out.println("getAdminAppStudents");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		ArrayList<User> student_list = getAdminStudents(schedule_code);
+//		ArrayList<User> student_list = getAdminStudents(schedule_code);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
