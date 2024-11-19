@@ -52,7 +52,6 @@ public class ApplicationController {
 		
 		try {
 			scheduleService.createEnroll(schedule_code, login_id);
-			
 			Schedule schedule = scheduleService.getSchedule(schedule_code, login_id);
 			
 			System.out.println(schedule);

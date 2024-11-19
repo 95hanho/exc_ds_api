@@ -43,7 +43,6 @@ public class Schedule {
 	
 	private int attendance_count;
 	
-	
 	public Schedule() {
 		// TODO Auto-generated constructor stub
 	}

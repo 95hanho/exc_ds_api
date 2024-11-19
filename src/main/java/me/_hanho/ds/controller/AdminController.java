@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.AdminService;
+import me._hanho.ds.service.ScheduleService;
 
 
 @RestController
@@ -29,6 +32,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private ScheduleService scheduleService;
 	
 	// 관리자 프로그램리스트 조회
 	@GetMapping("/application/{year}/{month}")
@@ -50,9 +56,9 @@ public class AdminController {
 		
 		adminService.updateSchedule(schedule);
 		
-		Schedule schedule_list = adminService.getAdminSchedule(schedule.getSchedule_code());
+		Schedule result_schedule = adminService.getAdminSchedule(schedule.getSchedule_code());
 
-		result.put("data", schedule_list);
+		result.put("data", result_schedule);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -119,23 +125,34 @@ public class AdminController {
 	// 관리자 수강신청자 변경
 	@PutMapping("/user/enrollment")
 	public ResponseEntity<Map<String, Object>> setEnrollStudent(@RequestParam("enroll_id") int enroll_id,
-			@RequestParam("to_member_no") String member_no) {
+			@RequestParam("to_member_no") int member_no, @RequestAttribute("login_id") String login_id) {
 		System.out.println("setEnrollStudent");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		adminService.updateStudent(enroll_id, member_no);
+		adminService.deleteStudent(enroll_id, member_no, login_id);
+		adminService.updateStudent(enroll_id, member_no, login_id);
+		Schedule schedule = adminService.getAdminSchedule(enroll_id);
 
+		result.put("data", schedule);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 신청명단 삭제
 	@DeleteMapping("/user/enrollment")
-	public ResponseEntity<Map<String, Object>> deleteEnrollStudent() {
+	public ResponseEntity<Map<String, Object>> deleteEnrollStudent(@ModelAttribute CancelLog cancel_log,
+			@RequestAttribute("login_id") String login_id) {
 		System.out.println("deleteEnrollStudent");
 		Map<String, Object> result = new HashMap<String, Object>();
+		cancel_log.setExecutor(login_id);
 
-		result.put("msg", "success");
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		try {
+			adminService.deleteStudent(cancel_log);
+			result.put("msg", "success");
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
 	}
 //	/*  */
 	// 유저 검색

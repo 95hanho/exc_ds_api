@@ -92,6 +92,7 @@ public class MemberController {
 		cancel_log.setLogin_id(login_id);
 		
 		try {
+			cancel_log.setFlag("취소");
 			scheduleService.deleteEnroll(cancel_log);
 			result.put("msg", "success");
 			return new ResponseEntity<>(result, HttpStatus.OK);

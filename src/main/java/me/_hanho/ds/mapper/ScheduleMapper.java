@@ -16,16 +16,11 @@ public interface ScheduleMapper {
 	
 	Schedule getSchedule(@Param("schedule_code") String schedule_code, @Param("login_id") String login_id);
 	
-	int upEnrol_count(String schedule_code);
-	
-	int createEnroll(@Param("schedule_code") String schedule_code,@Param("login_id") String login_id,
-			@Param("rank") int rank);
+	int createEnroll(@Param("schedule_code") String schedule_code, @Param("login_id") String login_id);
 
 	ArrayList<Enroll> getEnrolls(String login_id);
 
 	void deleteEnroll(@Param("schedule_code") String schedule_code, @Param("login_id") String login_id);
-
-	void downCount(String schedule_code);
 
 	void createCancelLog(CancelLog cancel_log);
 

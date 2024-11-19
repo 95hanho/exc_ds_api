@@ -30,8 +30,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	@Transactional
 	public void createEnroll(String schedule_code, String login_id) {
-		scheduleDAO.upEnrol_count(schedule_code);
 		scheduleDAO.createEnroll(schedule_code, login_id);
+		CancelLog cancel_log = new CancelLog("", "등록", schedule_code, login_id);
+		scheduleDAO.createCancelLog(cancel_log);
 	}
 
 	@Override
@@ -42,13 +43,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	@Transactional
 	public void deleteEnroll(CancelLog cancel_log) {
-		System.out.println(1);
 		scheduleDAO.deleteEnroll(cancel_log.getSchedule_code(), cancel_log.getLogin_id());
-		System.out.println(2);
-		scheduleDAO.downCount(cancel_log.getSchedule_code());
-		System.out.println(3);
-		scheduleDAO.createCancelLog(cancel_log); 
-		System.out.println(4);
+		scheduleDAO.createCancelLog(cancel_log);
 	}
 	
 }

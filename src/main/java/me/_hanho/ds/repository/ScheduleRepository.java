@@ -34,17 +34,8 @@ public class ScheduleRepository {
 	}
 	
 
-	public void upEnrol_count(String schedule_code) {
-		scheduleMapper.upEnrol_count(schedule_code);
-	}
-
 	public int createEnroll(String schedule_code, String login_id) {
-		Schedule schedule = scheduleMapper.getSchedule(schedule_code, login_id);
-		int rank = 0;
-		if(schedule.getEnrol_count() > schedule.getEnrol_limit()) {
-			rank = schedule.getEnrol_count() - schedule.getEnrol_limit();
-		}
-		return scheduleMapper.createEnroll(schedule_code, login_id, rank);
+		return scheduleMapper.createEnroll(schedule_code, login_id);
 	}
 
 	public ArrayList<Enroll> getEnrolls(String login_id) {
@@ -53,10 +44,6 @@ public class ScheduleRepository {
 
 	public void deleteEnroll(String schedule_code, String login_id) {
 		scheduleMapper.deleteEnroll(schedule_code, login_id);
-	}
-	
-	public void downCount(String schedule_code) {
-		scheduleMapper.downCount(schedule_code);
 	}
 	
 	public void createCancelLog(CancelLog cancel_log) {
