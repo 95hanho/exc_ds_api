@@ -43,7 +43,15 @@ public interface AdminMapper {
 	
 	void updateStudent(@Param("enroll_id") int enroll_id, @Param("member_no") int member_no);
 
+	/* */
+	
 	List<User> userSearch(@Param("type") String type, @Param("keyword") String keyword);
+	
+	List<CancelLog> getLogs(int member_no);
+	
+	List<Enroll> getEnrolls(int member_no);
+	
+	void updateUser(User user);
 	
 
 	

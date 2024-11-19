@@ -23,6 +23,7 @@ public class CancelLog {
 	
 	private String schedule_code;
 	private String program_name;
+	private String title;
 	private int schedule_index;
 	private Date schedule_start_Date;
 	
@@ -59,6 +60,36 @@ public class CancelLog {
 		this.login_id = login_id;
 		this.member_no = member_no;
 		this.executor = executor;
+	}
+
+	public CancelLog(int id, String reason, String cancel_msg, Date created_at, Date change_date, String flag,
+			String schedule_code, String program_name, String title, int schedule_index, Date schedule_start_Date,
+			String login_id, int member_no, String executor) {
+		super();
+		this.id = id;
+		this.reason = reason;
+		this.cancel_msg = cancel_msg;
+		this.created_at = created_at;
+		this.change_date = change_date;
+		this.flag = flag;
+		this.schedule_code = schedule_code;
+		this.program_name = program_name;
+		this.title = title;
+		this.schedule_index = schedule_index;
+		this.schedule_start_Date = schedule_start_Date;
+		this.login_id = login_id;
+		this.member_no = member_no;
+		this.executor = executor;
+	}
+	
+	
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public int getId() {
@@ -169,10 +200,9 @@ public class CancelLog {
 	public String toString() {
 		return "CancelLog [id=" + id + ", reason=" + reason + ", cancel_msg=" + cancel_msg + ", created_at="
 				+ created_at + ", change_date=" + change_date + ", flag=" + flag + ", schedule_code=" + schedule_code
-				+ ", program_name=" + program_name + ", schedule_index=" + schedule_index + ", schedule_start_Date="
-				+ schedule_start_Date + ", login_id=" + login_id + ", member_no=" + member_no + ", executor=" + executor
-				+ "]";
+				+ ", program_name=" + program_name + ", title=" + title + ", schedule_index=" + schedule_index
+				+ ", schedule_start_Date=" + schedule_start_Date + ", login_id=" + login_id + ", member_no=" + member_no
+				+ ", executor=" + executor + "]";
 	}
-	
 	
 }

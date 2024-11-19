@@ -110,6 +110,8 @@ public class AdminRepository {
 		adminMapper.updateStudent(enroll_id, member_no);
 	}
 	
+	/* */
+	
 	public List<User> userSearch(String type, String keyword) {
 		if(type.equals("hp")) {
 			type = "member_hp";
@@ -117,6 +119,18 @@ public class AdminRepository {
 			type = "member_insa_number";
 		}
 		return adminMapper.userSearch(type, keyword);
+	}
+
+	public List<CancelLog> getLogs(int member_no) {
+		return adminMapper.getLogs(member_no);
+	}
+
+	public List<Enroll> getEnrolls(int member_no) {
+		return adminMapper.getEnrolls(member_no);
+	}
+
+	public void updateUser(User user) {
+		adminMapper.updateUser(user);
 	}
 
 

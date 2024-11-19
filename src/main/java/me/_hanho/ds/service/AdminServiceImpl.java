@@ -76,10 +76,27 @@ public class AdminServiceImpl implements AdminService {
 		adminDAO.updateStudent(enroll_id, member_no);
 		adminDAO.createCancelLog(enroll_id, member_no, login_id, "변경");
 	}
+	
+	/* */
 
 	@Override
 	public List<User> userSearch(String type, String keyword) {
 		return adminDAO.userSearch(type, keyword);
+	}
+
+	@Override
+	public List<CancelLog> getLogs(int member_no) {
+		return adminDAO.getLogs(member_no);
+	}
+
+	@Override
+	public List<Enroll> getEnrolls(int member_no) {
+		return adminDAO.getEnrolls(member_no);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		adminDAO.updateUser(user);
 	}
 
 

@@ -33,9 +33,6 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	
-	@Autowired
-	private ScheduleService scheduleService;
-	
 	// 관리자 프로그램리스트 조회
 	@GetMapping("/application/{year}/{month}")
 	public ResponseEntity<Map<String, Object>> getAdminApp() {
@@ -170,27 +167,34 @@ public class AdminController {
 	}
 	// 교육생 정보 가져오기
 	@GetMapping("/member/info")
-	public ResponseEntity<Map<String, Object>> getStudentInfo() {
+	public ResponseEntity<Map<String, Object>> getStudentInfo(@RequestParam("member_no") int member_no,
+			@RequestParam("month") String month) {
 		System.out.println("getStudentInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<CancelLog> log_list = adminService.getLogs(member_no);
+		List<Enroll> enroll_list = adminService.getEnrolls(member_no);
 
+		
+		
+		Map<String, Object> data_result = new HashMap<String, Object>();
+		data_result.put("application_list", false);
+		data_result.put("change_log", log_list);
+		Map<String, Object> enrol_list = new HashMap<String, Object>();
+		enrol_list.put("new_list", enroll_list);
+		enrol_list.put("old_list", new ArrayList<>());
+		data_result.put("enrol_list", enrol_list);
+		result.put("data", data_result);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 교육색 정보 수정하기
 	@PutMapping("/member/info")
-	public ResponseEntity<Map<String, Object>> setStudentInfo() {
+	public ResponseEntity<Map<String, Object>> setStudentInfo(@ModelAttribute User user) {
 		System.out.println("setStudentInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
-
-		result.put("msg", "success");
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	// 교육생 과정차수 등록 해주기
-	@PostMapping("/member/info")
-	public ResponseEntity<Map<String, Object>> adminAppRegist() {
-		System.out.println("adminAppRegist");
-		Map<String, Object> result = new HashMap<String, Object>();
+		
+		adminService.updateUser(user);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);

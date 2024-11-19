@@ -28,6 +28,14 @@ public interface AdminService {
 
 	void updatePresent(List<String> member_no, String schedule_code, String type, String description);
 
+	/* */
+	
 	List<User> userSearch(String type, String keyword);
+	
+	List<CancelLog> getLogs(int member_no);
+	
+	List<Enroll> getEnrolls(int member_no);
+	
+	void updateUser(User user);
 	
 }

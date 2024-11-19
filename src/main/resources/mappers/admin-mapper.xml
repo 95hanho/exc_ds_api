@@ -222,5 +222,49 @@
 	        ELSE FALSE
 	    END;
 	</select>
+	<select id="getLogs">
+		SELECT reason AS cancel_msg, 
+		cl.created_at AS change_date, 
+		executor, flag, 
+		program_name, schedule_code, schedule_number AS schedule_index, program_name AS title
+		FROM cancel_log cl
+		JOIN schedule s ON cl.s_id = s.s_id
+		JOIN program p ON s.program_num = p.program_num
+		WHERE cl.login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		ORDER BY cl.created_at DESC
+	</select>
+	<select id="getEnrolls">
+		WITH RankedEnrollments AS (
+		    SELECT 
+		        e.enrol_id,
+		        e.s_id,
+		        e.login_id,
+		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
+		    FROM enroll e
+		),
+		WaitingList AS (
+		    SELECT 
+		        re.enrol_id,
+		        re.s_id,
+		        re.row_num - s.enrol_limit AS enrol_waiting_rank
+		    FROM RankedEnrollments re
+		    JOIN schedule s ON re.s_id = s.s_id
+		    WHERE re.row_num > s.enrol_limit
+		)
+		SELECT e.enrol_id, 
+		COALESCE(w.enrol_waiting_rank, 0) AS enrol_waiting_rank,
+		schedule_code, schedule_start_date, program_name AS title
+		FROM enroll e
+		JOIN schedule s ON e.s_id = s.s_id
+		JOIN program p ON s.program_num = p.program_num
+		LEFT JOIN WaitingList w ON e.enrol_id = w.enrol_id
+		WHERE e.login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		ORDER BY e.created_at DESC
+	</select>
+	<update id="updateUser">
+		UPDATE user
+		SET member_hp = #{member_hp}, member_type = #{member_type}, team_name = #{team_name}
+		WHERE member_no = #{member_no}
+	</update>
 	
 </mapper>
