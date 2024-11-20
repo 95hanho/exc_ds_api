@@ -5,11 +5,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Program;
+import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Schedule;
+import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
 import me._hanho.ds.repository.AdminRepository;
 
@@ -18,6 +22,9 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private AdminRepository adminDAO;
+	
+	@Autowired
+	private FileService fileService;
 
 	@Override
 	public ArrayList<Schedule> getAdminSchedules() {
@@ -38,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
 	@Transactional
 	public void updateSchedule(Schedule schedule) {
 		adminDAO.updateSchedule(schedule);
-		adminDAO.updateProgram(schedule);
+		adminDAO.updateProgramTime(schedule);
 	}
 
 
@@ -98,10 +105,38 @@ public class AdminServiceImpl implements AdminService {
 	public void updateUser(User user) {
 		adminDAO.updateUser(user);
 	}
+	
+	/* */
 
+	@Override
+	public ArrayList<ProgramCategory> getProgramCategory() {
+		return adminDAO.getProgramCategory();
+	}
+	
+	@Override
+	public Program getProgramLatest() {
+		return adminDAO.getProgramLatest();
+	}
 
+	@Override
+	@Transactional
+	public void createProgram(Program program, MultipartFile file) {
+		Program latest_program = adminDAO.createProgram(program);
+		fileService.createProgramFile(latest_program.getProgram_num(), file);
+	}
 
+	@Override
+	@Transactional
+	public void updateProgram(Program program, MultipartFile file) {
+		adminDAO.updateProgram(program);
+		if(file != null) {
+			fileService.createProgramFile(program.getProgram_num(), file);
+		}
+	}
 
-
+	@Override
+	public void updateProgram_status(String program_code) {
+		adminDAO.updateProgram_status(program_code);
+	}
 
 }

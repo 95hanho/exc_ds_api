@@ -81,7 +81,7 @@ public class NoticeController {
 		if(notice != null) {
 			ArrayList<Comment> comment_list = noticeService.getComments(id);
 			notice.setComment_list(comment_list);
-			ArrayList<UploadFile> file_list = fileService.getFiles(id);
+			ArrayList<UploadFile> file_list = fileService.getFiles(id, "notice");
 			notice.setFile_list(file_list);
 			result.put("data", notice);
 			result.put("msg", "success");
@@ -178,9 +178,11 @@ public class NoticeController {
 		System.out.println("noticeFileUpload");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		UploadFile inFile = new UploadFile(file.getOriginalFilename(), id);
+		UploadFile inFile = new UploadFile();
+		inFile.setName(file.getOriginalFilename());
+		inFile.setNotice_id(id);
 		
-		int file_result = fileService.createFile(inFile, file);
+		int file_result = fileService.createNoticeFile(inFile, file);
 		
 		if(file_result > 0) {
 			result.put("msg", "success");
@@ -196,9 +198,9 @@ public class NoticeController {
 		System.out.println("noticeFileDelete");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		ArrayList<UploadFile> file_list = fileService.getFiles(id);
+		ArrayList<UploadFile> file_list = fileService.getFiles(id, "notice");
 		
-		int delete_result = fileService.deleteFile(id, file_list.get(0));
+		int delete_result = fileService.deleteFile(id, file_list.get(0), "notice");
 		
 		if(delete_result > 0) {
 			result.put("msg", "success");

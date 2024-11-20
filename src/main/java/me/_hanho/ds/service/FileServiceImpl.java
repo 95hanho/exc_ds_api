@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.jsonwebtoken.io.IOException;
+import me._hanho.ds.model.Program;
 import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.repository.FileRepository;
 
@@ -22,47 +23,70 @@ public class FileServiceImpl implements FileService{
 	private FileRepository fileDAO;
 	
 	@Override
-	public int createFile(UploadFile inFile, MultipartFile file) {
+	public int createNoticeFile(UploadFile inFile, MultipartFile file) {
 		// 파일명 설정
 		String originalFileName = file.getOriginalFilename();
 		String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
-		inFile.setFileName(storedFileName);
+		String filePath = uploadDir + "/" + storedFileName;
+		inFile.setFilePath(filePath);
 		Boolean result = true;
 		
-		ArrayList<UploadFile> file_list = getFiles(inFile.getNotice_id());
+		ArrayList<UploadFile> file_list = getFiles(inFile.getNotice_id(), "notice");
 		if(file_list.size() > 0) {
-			result = deleteFile(file_list.get(0).getFileName());
+			System.out.println(file_list.get(0));
+			result = deleteFile(file_list.get(0).getFilePath());
 			Boolean result2 = saveFile(file, storedFileName);
 			if(result && result2) {
-				return fileDAO.updateFile(inFile);
+				return fileDAO.updateFile(inFile, "notice");
 			}
 		} else {
 			result = saveFile(file, storedFileName);
 			if(result) {
-				return fileDAO.createFile(inFile);
+				return fileDAO.createFile(inFile, "notice");
 			}
 		}
 		
 		return 0;
-		
 	}
 	
 	@Override
-	public ArrayList<UploadFile> getFiles(int id) {
-		ArrayList<UploadFile> files = fileDAO.getFiles(id);
+	public void createProgramFile(int programe_num, MultipartFile file) {
+		// 파일명 설정
+		String originalFileName = file.getOriginalFilename();
+		String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+		String filePath = uploadDir + "/" + storedFileName;
+		UploadFile inFile = new UploadFile();
+		inFile.setName(originalFileName);
+		inFile.setFilePath(storedFileName);
+		inFile.setProgram_num(programe_num);
+		inFile.setFilePath(filePath);
+		Boolean result = true;
 		
-		files.stream().forEach(file -> {
-			file.setUrl(uploadDir + "/" + file.getName());
-		});
-		
-		return files;
+		ArrayList<UploadFile> file_list = getFiles(inFile.getProgram_num(), "program");
+		if(file_list.size() > 0) {
+			result = deleteFile(file_list.get(0).getFilePath());
+			Boolean result2 = saveFile(file, storedFileName);
+			if(result && result2) {
+				fileDAO.updateFile(inFile, "program");
+			}
+		} else {
+			result = saveFile(file, storedFileName);
+			if(result) {
+				fileDAO.createFile(inFile, "program");
+			}
+		}
 	}
 	
 	@Override
-	public int deleteFile(int id, UploadFile file) {
-		Boolean delete_result = deleteFile(file.getFileName());
+	public ArrayList<UploadFile> getFiles(int id, String type) {
+		return fileDAO.getFiles(id, type);
+	}
+	
+	@Override
+	public int deleteFile(int id, UploadFile file, String type) {
+		Boolean delete_result = deleteFile(file.getFilePath());
 		if(delete_result) {
-			return fileDAO.deleteFile(id);
+			return fileDAO.deleteFile(id, type);
 		} return 0;
 	}
 	
@@ -78,8 +102,7 @@ public class FileServiceImpl implements FileService{
 		return true;
 	}
 	
-	public boolean deleteFile(String fileName) throws IOException {
-		String filePath = uploadDir + "/" + fileName;
+	public boolean deleteFile(String filePath) throws IOException {
 		File file = new File(filePath);
 
         // 파일 존재 여부 확인
@@ -97,9 +120,6 @@ public class FileServiceImpl implements FileService{
             return false;
         }
 	}
-
-
-
-
+	
 
 }

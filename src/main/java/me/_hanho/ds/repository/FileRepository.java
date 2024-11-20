@@ -14,23 +14,42 @@ public class FileRepository {
 	@Autowired
 	private FileMapper fileMapper;
 	
-	public int createFile(UploadFile inFile) {
-		return fileMapper.createFile(inFile);
+	public int createFile(UploadFile inFile, String type) {
+		if(type.equals("notice")) {
+			return fileMapper.createNoticeFile(inFile);
+		} else if(type.equals("program")) {
+			System.out.println(inFile);
+			return fileMapper.createProgramFile(inFile);
+		}
+		return 0;
 	}
 	
-	public int updateFile(UploadFile inFile) {
-		return fileMapper.updateFile(inFile);
+	public int updateFile(UploadFile inFile, String type) {
+		if(type.equals("notice")) {
+			return fileMapper.updateNoticeFile(inFile);
+		} else if(type.equals("program")) {
+			return fileMapper.updateProgramFile(inFile);
+		}
+		return 0;
 	}
 	
-	public int deleteFile(int id) {
-		return fileMapper.deleteFile(id);
+	public int deleteFile(int id, String type) {
+		if(type.equals("notice")) {
+			return fileMapper.deleteNoticeFile(id);
+		} else if(type.equals("program")) {
+			return fileMapper.deleteProgramFile(id);
+		}
+		return 0;
 	}
 
-	public ArrayList<UploadFile> getFiles(int id) {
-		return fileMapper.getFiles(id);
+	public ArrayList<UploadFile> getFiles(int id, String type) {
+		if(type.equals("notice")) {
+			return fileMapper.getNoticeFiles(id);
+		} else if(type.equals("program")) {
+			return fileMapper.getProgramFiles(id);
+		}
+		return null;
 	}
-
-
 
 
 }

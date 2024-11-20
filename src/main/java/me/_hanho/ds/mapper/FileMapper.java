@@ -9,12 +9,28 @@ import me._hanho.ds.model.UploadFile;
 @Mapper
 public interface FileMapper {
 
-	int createFile(UploadFile inFile);
+	int createNoticeFile(UploadFile inFile);
+	
+	int createProgramFile(UploadFile inFile);
 
-	int updateFile(UploadFile inFile);
+	int updateNoticeFile(UploadFile inFile);
+	
+	int updateProgramFile(UploadFile inFile);
 
-	int deleteFile(int id);
+	int deleteNoticeFile(int id);
+	
+	int deleteProgramFile(int id);
 
-	ArrayList<UploadFile> getFiles(int id);
+	ArrayList<UploadFile> getNoticeFiles(int id);
+
+	ArrayList<UploadFile> getProgramFiles(int id);
+
+	UploadFile selectLatestFile();
+
+	
+
+	
+
+	
 
 }

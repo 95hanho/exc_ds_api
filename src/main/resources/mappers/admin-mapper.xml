@@ -104,7 +104,7 @@
 		schedule_after_date = #{schedule_after_date}
 		WHERE schedule_code = #{schedule_code}
 	</update>
-	<update id="updateProgram">
+	<update id="updateProgramTime">
 		UPDATE program
 		SET time = #{time}
 		WHERE program_num = (SELECT program_num FROM schedule WHERE schedule_code = #{schedule_code})
@@ -266,5 +266,44 @@
 		SET member_hp = #{member_hp}, member_type = #{member_type}, team_name = #{team_name}
 		WHERE member_no = #{member_no}
 	</update>
-	
+	<!-- -->
+	<select id="getProgramCategory">
+		SELECT *
+		FROM program_category;
+	</select>
+	<select id="getPrograms2">
+		SELECT p.program_num, program_code, program_name, program_status, 
+		f.filePath AS program_header_img_url_v2, 
+		program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num
+		FROM program p
+		JOIN file f ON p.program_num = f.program_num
+		WHERE category_num = #{category_num}
+	</select>
+	<select id="getProgramLatest">
+		SELECT *
+		FROM program
+		order by program_num desc limit 1
+	</select>
+	<insert id="createProgram">
+		INSERT INTO program(program_code, program_name, program_status, program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num)
+		VALUES (#{program_code}, #{program_name}, 'N', 'Y', #{program_hash_tag}, #{time}, #{time_ment}, #{place}, #{program_content}, 
+		(SELECT cate_num FROM program_category WHERE title = #{program_category})) 
+	</insert>
+	<update id="updateProgram">
+		UPDATE program
+		SET program_name = #{program_name}, program_new_label = #{program_new_label},
+		program_hash_tag = #{program_hash_tag}, time = #{time}, time_ment = #{time_ment},
+		place = #{place}, program_content = #{program_content},
+		category_num = (SELECT cate_num FROM program_category WHERE title = #{program_category})
+		WHERE program_num = #{program_num}
+	</update>
+	<update id="updateProgram_status">
+		UPDATE program
+		SET program_status = CASE 
+		                        WHEN program_status = 'Y' THEN 'N'
+		                        ELSE 'Y'
+		                     END
+		WHERE program_code = #{program_code}
+	</update>
+
 </mapper>

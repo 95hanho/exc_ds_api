@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Program;
+import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 
@@ -19,7 +21,7 @@ public interface AdminMapper {
 	Schedule getAdminSchedule2(int enroll_id);
 
 	void updateSchedule(Schedule schedule);
-	void updateProgram(Schedule schedule);
+	void updateProgramTime(Schedule schedule);
 
 	int updateScheduleStatus(@Param("schedule_codes") List<String> schedule_codes);
 
@@ -53,7 +55,20 @@ public interface AdminMapper {
 	
 	void updateUser(User user);
 	
-
+	/* */
+	
+	ArrayList<ProgramCategory> getProgramCategory();
+	ArrayList<Program> getPrograms2(int cate_num);
+	
+	Program getProgramLatest();
+	
+	void createProgram(Program program);
+	int getLatestProgram();
+	void updateProgramImgUrl(@Param("program_num") int program_num, @Param("fileUrl") String fileUrl);
+	
+	void updateProgram(Program program);
+	
+	void updateProgram_status(String program_code);
 	
 
 	

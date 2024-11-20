@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
 <mapper namespace="me._hanho.ds.mapper.FileMapper">
-	<insert id="createFile">
-		INSERT INTO file(name, fileName, notice_id)
-		VALUES (#{name}, #{fileName}, #{notice_id})
+	<insert id="createNoticeFile">
+		INSERT INTO file(name, filePath, notice_id)
+		VALUES (#{name}, #{filePath}, #{notice_id})
 	</insert>
-	<update id="updateFile">
+	<insert id="createProgramFile">
+		INSERT INTO file(name, filePath, program_num)
+		VALUES (#{name}, #{filePath}, #{program_num})
+	</insert>
+	<update id="updateNoticeFile">
 		UPDATE file
-		SET name = #{name}, fileName = #{fileName}
+		SET name = #{name}, filePath = #{filePath}
 		WHERE notice_id = #{notice_id}
 	</update>
-	<delete id="deleteFile">
+	<update id="updateProgramFile">
+		UPDATE file
+		SET name = #{name}, filePath = #{filePath}
+		WHERE program_num = #{program_num}
+	</update>
+	<delete id="deleteNoticeFile">
 		DELETE FROM file
 		WHERE notice_id = #{id}
 	</delete>
-	<select id="getFiles">
-		SELECT * FROM file
+	<delete id="deleteProgramFile">
+		DELETE FROM file
+		WHERE program_num = #{id}
+	</delete>
+	<select id="getNoticeFiles">
+		SELECT file_num, name, filePath, filePath AS url, created_at, notice_id, program_num
+		FROM file
 		WHERE notice_id = #{id}
+	</select>
+	<select id="getProgramFiles">
+		SELECT * FROM file
+		WHERE program_num = #{id}
+	</select>
+	<select id="selectLatestFile">
+		SELECT * FROM file
+		order by created_at desc limit 1
 	</select>
 </mapper>

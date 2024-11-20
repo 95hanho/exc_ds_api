@@ -11,15 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Program;
+import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.AdminService;
@@ -87,7 +91,6 @@ public class AdminController {
 		} else if(type == "EXCEL") {
 			
 		}
-		
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -174,8 +177,6 @@ public class AdminController {
 		
 		List<CancelLog> log_list = adminService.getLogs(member_no);
 		List<Enroll> enroll_list = adminService.getEnrolls(member_no);
-
-		
 		
 		Map<String, Object> data_result = new HashMap<String, Object>();
 		data_result.put("application_list", false);
@@ -205,30 +206,73 @@ public class AdminController {
 	public ResponseEntity<Map<String, Object>> getProgram() {
 		System.out.println("getProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		ArrayList<ProgramCategory> catelist = adminService.getProgramCategory();
 
+		result.put("data", catelist);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 과정추가
 	@PostMapping("/program/write")
-	public ResponseEntity<Map<String, Object>> addProgram() {
+	public ResponseEntity<Map<String, Object>> addProgram(@ModelAttribute Program program, 
+			@RequestParam(value="file", required=false) MultipartFile file) {
 		System.out.println("addProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		Program latest_program = adminService.getProgramLatest();
+		
+		// 문자열의 숫자 부분 추출
+        String prefix = latest_program.getProgram_code().replaceAll("\\d", ""); // "S"
+        String numericPart = latest_program.getProgram_code().replaceAll("\\D", ""); // "20"
+        // 숫자를 증가시키고 다시 결합
+        int incrementedValue = Integer.parseInt(numericPart) + 1; // 숫자 변환 후 +1
+        program.setProgram_code(prefix + incrementedValue);
+        
+        // "4H (8:30~12:30 / 13:30~17:30)" time이랑 ment로 구분
+        String[] parts = ((String) program.getTime()).split(" ", 2);
+        int time = Integer.parseInt(parts[0].replaceAll("\\D", ""));
+        String time_ment = parts[1];
+        program.setTime(time);
+        program.setTime_ment(time_ment);
+		
+		adminService.createProgram(program, file);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 과정수정
 	@PostMapping("/program/modify")
-	public ResponseEntity<Map<String, Object>> setProgram() {
+	public ResponseEntity<Map<String, Object>> setProgram(@ModelAttribute Program program, 
+			@RequestParam(value="file", required=false) MultipartFile file) {
 		System.out.println("setProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		System.out.println(program);
+		
+		// "4H (8:30~12:30 / 13:30~17:30)" time이랑 ment로 구분
+        String[] parts = ((String) program.getTime()).split(" ", 2);
+        int time = Integer.parseInt(parts[0].replaceAll("\\D", ""));
+        String time_ment = parts[1];
+        program.setTime(time);
+        program.setTime_ment(time_ment);
+        
+        adminService.updateProgram(program, file);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 과정 숨김
-//	export const programHide = (code) => get_normal(`/program/modify/${code}`);
+	@GetMapping("/program/modify/{code}")
+	public ResponseEntity<Map<String, Object>> programHide(@PathVariable("code") String program_code) {
+		System.out.println("programHide");
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		adminService.updateProgram_status(program_code);
+
+		result.put("msg", "success");
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 //	/*  */
 	// 기본 설정 정보 가져오기
 	@GetMapping("/other/main")
@@ -240,6 +284,7 @@ public class AdminController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 기본 월 설정
+	/*
 	@PostMapping("/other/month")
 	public ResponseEntity<Map<String, Object>> setInitMonth() {
 		System.out.println("setInitMonth");
@@ -248,6 +293,7 @@ public class AdminController {
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	*/
 	// 취소 사유 목록 엑셀다운로드
 	@GetMapping("/other/excel/cancel")
 	public ResponseEntity<Map<String, Object>> cancelListDownload() {

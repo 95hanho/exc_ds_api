@@ -17,36 +17,24 @@ public class UploadFile {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int file_num;
 	private String name;
-	private String fileName;
+	private String filePath;
 	private Date create_at;
 	private int notice_id;
+	private int program_num;
 	private String url;
 	
 	public UploadFile() {
 	}
 
-	public UploadFile(String name, int notice_id) {
-		super();
-		this.name = name;
-		this.notice_id = notice_id;
-	}
-
-	public UploadFile(int file_num, String name, Date create_at, int notice_id, String url) {
+	public UploadFile(int file_num, String name, String filePath, Date create_at, int notice_id, int program_num,
+			String url) {
 		super();
 		this.file_num = file_num;
 		this.name = name;
+		this.filePath = filePath;
 		this.create_at = create_at;
 		this.notice_id = notice_id;
-		this.url = url;
-	}
-	
-	public UploadFile(int file_num, String name, String fileName, Date create_at, int notice_id, String url) {
-		super();
-		this.file_num = file_num;
-		this.name = name;
-		this.fileName = fileName;
-		this.create_at = create_at;
-		this.notice_id = notice_id;
+		this.program_num = program_num;
 		this.url = url;
 	}
 
@@ -66,6 +54,14 @@ public class UploadFile {
 		this.name = name;
 	}
 
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
 	public Date getCreate_at() {
 		return create_at;
 	}
@@ -82,6 +78,14 @@ public class UploadFile {
 		this.notice_id = notice_id;
 	}
 
+	public int getProgram_num() {
+		return program_num;
+	}
+
+	public void setProgram_num(int program_num) {
+		this.program_num = program_num;
+	}
+
 	public String getUrl() {
 		return url;
 	}
@@ -89,21 +93,11 @@ public class UploadFile {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
 
 	@Override
 	public String toString() {
-		return "UploadFile [file_num=" + file_num + ", name=" + name + ", fileName=" + fileName + ", create_at="
-				+ create_at + ", notice_id=" + notice_id + ", url=" + url + "]";
+		return "UploadFile [file_num=" + file_num + ", name=" + name + ", filePath=" + filePath + ", create_at="
+				+ create_at + ", notice_id=" + notice_id + ", program_num=" + program_num + ", url=" + url + "]";
 	}
-	
+
 }

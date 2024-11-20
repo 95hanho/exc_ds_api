@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import me._hanho.ds.mapper.AdminMapper;
+import me._hanho.ds.mapper.FileMapper;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Program;
+import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Schedule;
+import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
 import me._hanho.ds.util.JsonUtils;
 
@@ -18,6 +23,12 @@ public class AdminRepository {
 	
 	@Autowired
 	private AdminMapper adminMapper;
+	
+	@Autowired
+	private FileMapper fileMapper;
+	
+	@Value("${spring.servlet.multipart.location}")
+    private String uploadDir;
 
 	public ArrayList<Schedule> getAdminSchedules() {
 		ArrayList<Schedule> s_list = adminMapper.getAdminSchedules();
@@ -42,8 +53,8 @@ public class AdminRepository {
 		adminMapper.updateSchedule(schedule);
 	}
 	
-	public void updateProgram(Schedule schedule) {
-		adminMapper.updateProgram(schedule);
+	public void updateProgramTime(Schedule schedule) {
+		adminMapper.updateProgramTime(schedule);
 	}
 
 	public void updateScheduleStatus(List<String> schedule_codes, String type) {
@@ -132,16 +143,38 @@ public class AdminRepository {
 	public void updateUser(User user) {
 		adminMapper.updateUser(user);
 	}
+	
+	/* */
 
+	public ArrayList<ProgramCategory> getProgramCategory() {
+		ArrayList<ProgramCategory> result =  new ArrayList<>();
+		ArrayList<ProgramCategory> pc_list =  adminMapper.getProgramCategory();
+		pc_list.stream().forEach(pc -> {
+			ArrayList<Program> p_list = adminMapper.getPrograms2(pc.getCate_num());
+			if(p_list.size() > 0) {
+				pc.setList(p_list);
+				result.add(pc);
+			}
+		});
+		
+		return result;
+	}
 
+	public Program getProgramLatest() {
+		return adminMapper.getProgramLatest();
+	}
 
+	public Program createProgram(Program program) {
+		adminMapper.createProgram(program);
+		return adminMapper.getProgramLatest();
+	}
 
+	public void updateProgram(Program program) {
+		adminMapper.updateProgram(program);
+	}
 
-
-
-
-
-
-
+	public void updateProgram_status(String program_code) {
+		adminMapper.updateProgram_status(program_code);
+	}
 
 }

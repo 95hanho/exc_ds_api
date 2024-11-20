@@ -27,6 +27,7 @@ public class Program {
 	private int category_num;
 	private String category_name;
 	private String category_bg_url;
+	private String program_category;
 	
 	public Program() {
 	}
@@ -52,7 +53,29 @@ public class Program {
 		this.category_bg_url = category_bg_url;
 	}
 
+	
 
+	public Program(int program_num, String program_code, String program_name, String program_status,
+			String program_header_img_url_v2, String program_new_label, String program_hash_tag, Object time,
+			String time_ment, String place, String program_content, int category_num, String category_name,
+			String category_bg_url, String program_category) {
+		super();
+		this.program_num = program_num;
+		this.program_code = program_code;
+		this.program_name = program_name;
+		this.program_status = program_status;
+		this.program_header_img_url_v2 = program_header_img_url_v2;
+		this.program_new_label = program_new_label;
+		this.program_hash_tag = program_hash_tag;
+		this.time = time;
+		this.time_ment = time_ment;
+		this.place = place;
+		this.program_content = program_content;
+		this.category_num = category_num;
+		this.category_name = category_name;
+		this.category_bg_url = category_bg_url;
+		this.program_category = program_category;
+	}
 
 	public int getProgram_num() {
 		return program_num;
@@ -165,6 +188,14 @@ public class Program {
 	public void setCategory_bg_url(String category_bg_url) {
 		this.category_bg_url = category_bg_url;
 	}
+	
+	public String getProgram_category() {
+		return program_category;
+	}
+
+	public void setProgram_category(String program_category) {
+		this.program_category = program_category;
+	}
 
 	@Override
 	public String toString() {
@@ -173,7 +204,8 @@ public class Program {
 				+ program_header_img_url_v2 + ", program_new_label=" + program_new_label + ", program_hash_tag="
 				+ program_hash_tag + ", time=" + time + ", time_ment=" + time_ment + ", place=" + place
 				+ ", program_content=" + program_content + ", category_num=" + category_num + ", category_name="
-				+ category_name + ", category_bg_url=" + category_bg_url + "]";
+				+ category_name + ", category_bg_url=" + category_bg_url + ", program_category=" + program_category
+				+ "]";
 	}
 
 }

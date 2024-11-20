@@ -3,8 +3,12 @@ package me._hanho.ds.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Program;
+import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 
@@ -37,5 +41,18 @@ public interface AdminService {
 	List<Enroll> getEnrolls(int member_no);
 	
 	void updateUser(User user);
+	
+	/* */
+	
+	ArrayList<ProgramCategory> getProgramCategory();
+	
+	Program getProgramLatest();
+	
+	void createProgram(Program program, MultipartFile file);
+	
+	void updateProgram(Program program, MultipartFile file);
+	
+	void updateProgram_status(String program_code);
+
 	
 }
