@@ -24,10 +24,10 @@ import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.AdminService;
-import me._hanho.ds.service.ScheduleService;
 
 
 @RestController
@@ -305,7 +305,9 @@ public class AdminController {
 	}
 	// 메인팝업 설정 수정
 	@PostMapping("/other/popup")
-	public ResponseEntity<Map<String, Object>> setMainPopup() {
+	public ResponseEntity<Map<String, Object>> setMainPopup(@RequestParam(value="file1", required=false) MultipartFile file1,
+			@RequestParam(value="file2", required=false) MultipartFile file2, @RequestParam("file1_status") Boolean file1_status,
+			@RequestParam("file2_status") Boolean file2_status) {
 		System.out.println("setMainPopup");
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -314,9 +316,13 @@ public class AdminController {
 	}
 	// 수강생 후기 작성
 	@PostMapping("/other/review")
-	public ResponseEntity<Map<String, Object>> addReview() {
+	public ResponseEntity<Map<String, Object>> addReview(@ModelAttribute Review review) {
 		System.out.println("addReview");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		System.out.println(review);
+		
+		adminService.createReview(review);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
