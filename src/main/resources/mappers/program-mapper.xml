@@ -21,4 +21,9 @@
 		JOIN program_category pc ON p.category_num = pc.cate_num
 		WHERE program_code = #{program_code}
 	</select>
+	<select id="getReviews">
+		SELECT *
+		FROM review
+		WHERE program_num = (SELECT program_num FROM program WHERE program_code = #{program_code})
+	</select>
 </mapper>

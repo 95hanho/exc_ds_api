@@ -8,8 +8,10 @@ import org.apache.ibatis.annotations.Param;
 
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Popup;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.User;
 
@@ -69,6 +71,18 @@ public interface AdminMapper {
 	void updateProgram(Program program);
 	
 	void updateProgram_status(String program_code);
+	
+	/* */
+	List<CancelLog> getCancels();
+	
+	List<Popup> getPopups();
+	
+	void updatePopup(@Param("file_status") Boolean file_status, @Param("type") int type);
+	
+	void createReview(Review review);
+
+
+	
 	
 
 	

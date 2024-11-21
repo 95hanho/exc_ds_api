@@ -305,5 +305,30 @@
 		                     END
 		WHERE program_code = #{program_code}
 	</update>
+	<!-- -->
+	<select id="getCancels">
+		SELECT id, reason, flag, cl.created_at, s_id, u.name AS login_id, u2.name AS executor
+		FROM cancel_log cl
+		JOIN user u ON u.login_id = cl.login_id
+		JOIN user u2 ON u2.login_id = cl.executor
+		WHERE flag = '취소'
+		ORDER BY cl.created_at ASC
+	</select>
+	<select id="getPopups">
+		SELECT p.popup_id AS type, status, name
+		FROM popup p 
+		JOIN file f ON f.popup_id = p.popup_id
+	</select>
+	
+	<update id="updatePopup">
+		UPDATE popup
+		SET status = #{file_status}
+		WHERE popup_id = #{type}
+	</update>
+	<insert id="createReview">
+		INSERT INTO review(rate, contents, regdate, writer, program_num)
+		VALUES (#{review_ring_rate}, #{review_content}, #{review_enrol_date}, #{review_name}, 
+		(SELECT program_num FROM program WHERE program_code = #{program_code}))
+	</insert>
 
 </mapper>

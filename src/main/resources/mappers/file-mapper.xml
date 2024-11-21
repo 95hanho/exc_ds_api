@@ -9,6 +9,10 @@
 		INSERT INTO file(name, filePath, program_num)
 		VALUES (#{name}, #{filePath}, #{program_num})
 	</insert>
+	<insert id="createPopupFile">
+		INSERT INTO file(name, filePath, popup_id)
+		VALUES (#{name}, #{filePath}, #{popup_id})
+	</insert>
 	<update id="updateNoticeFile">
 		UPDATE file
 		SET name = #{name}, filePath = #{filePath}
@@ -19,6 +23,11 @@
 		SET name = #{name}, filePath = #{filePath}
 		WHERE program_num = #{program_num}
 	</update>
+	<update id="updatePopupFile">
+		UPDATE file
+		SET name = #{name}, filePath = #{filePath}
+		WHERE popup_id = #{popup_id}
+	</update>
 	<delete id="deleteNoticeFile">
 		DELETE FROM file
 		WHERE notice_id = #{id}
@@ -26,6 +35,10 @@
 	<delete id="deleteProgramFile">
 		DELETE FROM file
 		WHERE program_num = #{id}
+	</delete>
+	<delete id="deletePopupFile">
+		DELETE FROM file
+		WHERE popup_id = #{id}
 	</delete>
 	<select id="getNoticeFiles">
 		SELECT file_num, name, filePath, filePath AS url, created_at, notice_id, program_num
@@ -36,8 +49,17 @@
 		SELECT * FROM file
 		WHERE program_num = #{id}
 	</select>
+	<select id="getPopupFiles">
+		SELECT * FROM file
+		WHERE popup_id = #{id}
+	</select>
 	<select id="selectLatestFile">
 		SELECT * FROM file
 		order by created_at desc limit 1
+	</select>
+	<select id="getMainPopups">
+		SELECT filePath
+		FROM file
+		WHERE popup_id != "";
 	</select>
 </mapper>

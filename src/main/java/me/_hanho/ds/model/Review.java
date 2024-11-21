@@ -24,7 +24,7 @@ public class Review {
 	
 	private String program_code;
 	private String review_content;
-	private Date review_enrol_date;
+	private String review_enrol_date;
 	private String review_name;
 	private int review_ring_rate;
 	
@@ -41,7 +41,7 @@ public class Review {
 		this.program_num = program_num;
 	}
 	
-	public Review(String program_code, String review_content, Date review_enrol_date, String review_name,
+	public Review(String program_code, String review_content, String review_enrol_date, String review_name,
 			int review_ring_rate) {
 		super();
 		this.program_code = program_code;
@@ -115,11 +115,11 @@ public class Review {
 		this.review_content = review_content;
 	}
 
-	public Date getReview_enrol_date() {
+	public String getReview_enrol_date() {
 		return review_enrol_date;
 	}
 
-	public void setReview_enrol_date(Date review_enrol_date) {
+	public void setReview_enrol_date(String review_enrol_date) {
 		this.review_enrol_date = review_enrol_date;
 	}
 

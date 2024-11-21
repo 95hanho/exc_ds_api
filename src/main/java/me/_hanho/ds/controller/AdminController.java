@@ -1,10 +1,16 @@
 package me._hanho.ds.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletResponse;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Popup;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Review;
@@ -279,7 +287,12 @@ public class AdminController {
 	public ResponseEntity<Map<String, Object>> getInitMonth() {
 		System.out.println("getInitMonth");
 		Map<String, Object> result = new HashMap<String, Object>();
-
+		Map<String, Object> data_result = new HashMap<String, Object>();
+		
+		List<Popup> popup_info = adminService.getPopups();
+		
+		data_result.put("pop_info", popup_info);
+		result.put("data", data_result);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -296,12 +309,42 @@ public class AdminController {
 	*/
 	// 취소 사유 목록 엑셀다운로드
 	@GetMapping("/other/excel/cancel")
-	public ResponseEntity<Map<String, Object>> cancelListDownload() {
+	public void cancelListDownload(HttpServletResponse response) throws IOException {
 		System.out.println("cancelListDownload");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<CancelLog> cancel_list = adminService.getCancels();
+		
+		// 2. 엑셀 파일 생성
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("취소 사유 목록");
 
-		result.put("msg", "success");
-		return new ResponseEntity<>(result, HttpStatus.OK);
+        // 3. 헤더 작성
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {"취소번호", "사유", "날짜", "타입", "유저이름", "변경인"};
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+        }
+
+        // 4. 데이터 작성
+        int rowIndex = 1; // 헤더 다음 행부터 작성
+        for (CancelLog cancelLog : cancel_list) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(cancelLog.getId());
+            row.createCell(1).setCellValue(cancelLog.getReason());
+            row.createCell(2).setCellValue(cancelLog.getCreated_at().toString()); // Date -> String 변환
+            row.createCell(3).setCellValue(cancelLog.getFlag());
+            row.createCell(4).setCellValue(cancelLog.getLogin_id());
+            row.createCell(5).setCellValue(cancelLog.getExecutor());
+        }
+
+        // 5. HTTP 응답에 엑셀 파일 첨부
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=cancel_list.xlsx");
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
 	}
 	// 메인팝업 설정 수정
 	@PostMapping("/other/popup")
@@ -310,6 +353,9 @@ public class AdminController {
 			@RequestParam("file2_status") Boolean file2_status) {
 		System.out.println("setMainPopup");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		adminService.updatePopup(file1, file1_status, 1);
+		adminService.updatePopup(file2, file2_status, 2);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -327,5 +373,5 @@ public class AdminController {
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-
+	
 }

@@ -2,6 +2,7 @@ package me._hanho.ds.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 import me._hanho.ds.service.ProgramService;
 
 @RestController
@@ -43,19 +45,19 @@ public class IntroController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		Program program = programService.getProgramAndCategory(program_code);
+		List<Review> review_list = programService.getReviews(program_code);
+		
 		
 		Map<String, Object> dataResult = new HashMap<String, Object>();
 		Map<String, Object> data_infoResult = new HashMap<String, Object>();
-		
 		dataResult.put("program_name", program.getProgram_name());
-		
 		data_infoResult.put("categroy_name", program.getCategory_name());
 		data_infoResult.put("categroy_bg_url", program.getCategory_bg_url());
 		data_infoResult.put("time", program.getTime() + "H " + program.getTime_ment());
 		data_infoResult.put("place", program.getPlace());
 		dataResult.put("program_meta_info", data_infoResult);
 		dataResult.put("program_content", program.getProgram_content());
-		dataResult.put("review_data", new ArrayList<>());
+		dataResult.put("review_data", review_list);
 		result.put("data", dataResult);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);

@@ -10,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.transaction.Transactional;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Popup;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
@@ -138,5 +140,36 @@ public class AdminServiceImpl implements AdminService {
 	public void updateProgram_status(String program_code) {
 		adminDAO.updateProgram_status(program_code);
 	}
+	
+	/* */
+	@Override
+	public List<CancelLog> getCancels() {
+		return adminDAO.getCancels();
+	}
+	
+	@Override
+	public List<Popup> getPopups() {
+		return adminDAO.getPopups();
+	}
+
+	
+	@Override
+	@Transactional
+	public void updatePopup(MultipartFile file, Boolean file_status, int type) {
+		adminDAO.updatePopup(file_status, type);
+		if(file != null) {
+			fileService.createPopupFile(file, type);
+		}
+	}
+
+	@Override
+	public void createReview(Review review) {
+		adminDAO.createReview(review);
+	}
+
+
+
+
+
 
 }

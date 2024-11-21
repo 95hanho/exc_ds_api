@@ -2,6 +2,7 @@ package me._hanho.ds.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,7 +58,6 @@ public class FileServiceImpl implements FileService{
 		String filePath = uploadDir + "/" + storedFileName;
 		UploadFile inFile = new UploadFile();
 		inFile.setName(originalFileName);
-		inFile.setFilePath(storedFileName);
 		inFile.setProgram_num(programe_num);
 		inFile.setFilePath(filePath);
 		Boolean result = true;
@@ -73,6 +73,34 @@ public class FileServiceImpl implements FileService{
 			result = saveFile(file, storedFileName);
 			if(result) {
 				fileDAO.createFile(inFile, "program");
+			}
+		}
+	}
+	
+	
+	@Override
+	public void createPopupFile(MultipartFile file, int type) {
+		// 파일명 설정
+		String originalFileName = file.getOriginalFilename();
+		String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+		String filePath = uploadDir + "/" + storedFileName;
+		UploadFile inFile = new UploadFile();
+		inFile.setName(originalFileName);
+		inFile.setPopup_id(type);
+		inFile.setFilePath(filePath);
+		Boolean result = true;
+		
+		ArrayList<UploadFile> file_list = getFiles(inFile.getProgram_num(), "popup");
+		if(file_list.size() > 0) {
+			result = deleteFile(file_list.get(0).getFilePath());
+			Boolean result2 = saveFile(file, storedFileName);
+			if(result && result2) {
+				fileDAO.updateFile(inFile, "popup");
+			}
+		} else {
+			result = saveFile(file, storedFileName);
+			if(result) {
+				fileDAO.createFile(inFile, "popup");
 			}
 		}
 	}
@@ -120,6 +148,13 @@ public class FileServiceImpl implements FileService{
             return false;
         }
 	}
+
+	@Override
+	public List<String> getMainPopups() {
+		return fileDAO.getMainPopups();
+	}
+
+
 	
 
 }

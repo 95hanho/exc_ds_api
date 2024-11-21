@@ -19,6 +19,7 @@ public class UploadFile {
 	private String name;
 	private String filePath;
 	private Date create_at;
+	private int popup_id;
 	private int notice_id;
 	private int program_num;
 	private String url;
@@ -33,6 +34,19 @@ public class UploadFile {
 		this.name = name;
 		this.filePath = filePath;
 		this.create_at = create_at;
+		this.notice_id = notice_id;
+		this.program_num = program_num;
+		this.url = url;
+	}
+	
+	public UploadFile(int file_num, String name, String filePath, Date create_at, int popup_id, int notice_id,
+			int program_num, String url) {
+		super();
+		this.file_num = file_num;
+		this.name = name;
+		this.filePath = filePath;
+		this.create_at = create_at;
+		this.popup_id = popup_id;
 		this.notice_id = notice_id;
 		this.program_num = program_num;
 		this.url = url;
@@ -94,10 +108,19 @@ public class UploadFile {
 		this.url = url;
 	}
 
+	public int getPopup_id() {
+		return popup_id;
+	}
+
+	public void setPopup_id(int popup_id) {
+		this.popup_id = popup_id;
+	}
+
 	@Override
 	public String toString() {
 		return "UploadFile [file_num=" + file_num + ", name=" + name + ", filePath=" + filePath + ", create_at="
-				+ create_at + ", notice_id=" + notice_id + ", program_num=" + program_num + ", url=" + url + "]";
+				+ create_at + ", popup_id=" + popup_id + ", notice_id=" + notice_id + ", program_num=" + program_num
+				+ ", url=" + url + "]";
 	}
 
 }

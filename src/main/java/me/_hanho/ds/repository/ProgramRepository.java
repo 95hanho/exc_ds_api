@@ -1,6 +1,7 @@
 package me._hanho.ds.repository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import me._hanho.ds.mapper.ProgramMapper;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 
 @Repository
 public class ProgramRepository {
@@ -35,6 +37,10 @@ public class ProgramRepository {
 
 	public Program getProgramAndCategory(String program_code) {
 		return programMapper.getProgramAndCategory(program_code);
+	}
+
+	public List<Review> getReviews(String program_code) {
+		return programMapper.getReviews(program_code);
 	}
 
 }

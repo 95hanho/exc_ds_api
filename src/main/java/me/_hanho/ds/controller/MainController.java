@@ -2,6 +2,7 @@ package me._hanho.ds.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import me._hanho.ds.model.Notice;
+import me._hanho.ds.model.UploadFile;
+import me._hanho.ds.service.FileService;
 import me._hanho.ds.service.NoticeService;
 
 @RestController
@@ -20,6 +23,9 @@ public class MainController {
 	
 	@Autowired
 	private NoticeService noticeService;
+	
+	@Autowired
+	private FileService fileService;
 
 	// 메인페이지 필요정보
 	@GetMapping("/latest")
@@ -31,8 +37,10 @@ public class MainController {
 		
 		Map<String, Object> dataResult = new HashMap<String, Object>();
 		
+		List<String> popup_list = fileService.getMainPopups();
+		
 		dataResult.put("notice_latest", notice_latest);
-		dataResult.put("popup_list", new ArrayList<>());
+		dataResult.put("popup_list", popup_list);
 		result.put("data", dataResult);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);

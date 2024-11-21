@@ -11,8 +11,10 @@ import me._hanho.ds.mapper.AdminMapper;
 import me._hanho.ds.mapper.FileMapper;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.Popup;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
+import me._hanho.ds.model.Review;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
@@ -176,5 +178,26 @@ public class AdminRepository {
 	public void updateProgram_status(String program_code) {
 		adminMapper.updateProgram_status(program_code);
 	}
+	
+	/* */
+	public List<CancelLog> getCancels() {
+		return adminMapper.getCancels();
+	}
+
+	
+	public void updatePopup(Boolean file_status, int type) {
+		adminMapper.updatePopup(file_status, type);
+	}
+
+	public void createReview(Review review) {
+		adminMapper.createReview(review);
+	}
+
+	public List<Popup> getPopups() {
+		return adminMapper.getPopups();
+	}
+
+
+
 
 }
