@@ -42,6 +42,17 @@ public class AdminServiceImpl implements AdminService {
 	public Schedule getAdminSchedule(int enroll_id) {
 		return adminDAO.getAdminSchedule(enroll_id);
 	}
+	
+	@Override
+	public Schedule getScheduleLatest() {
+		return adminDAO.getScheduleLatest();
+	}
+
+	
+	@Override
+	public void setSchedules(List<Schedule> param_schedule_list) {
+		adminDAO.setSchedules(param_schedule_list);
+	}
 
 	@Override
 	@Transactional
@@ -59,6 +70,11 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public ArrayList<Enroll> getAdminStudents(String schedule_code) {
 		return adminDAO.getAdminStudents(schedule_code);
+	}
+	
+	@Override
+	public List<User> getStudents(List<String> schedule_codes, boolean b) {
+		return adminDAO.getStudents(schedule_codes, b);
 	}
 
 	@Override
@@ -166,10 +182,6 @@ public class AdminServiceImpl implements AdminService {
 	public void createReview(Review review) {
 		adminDAO.createReview(review);
 	}
-
-
-
-
 
 
 }

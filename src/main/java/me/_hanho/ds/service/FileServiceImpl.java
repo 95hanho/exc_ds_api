@@ -34,7 +34,6 @@ public class FileServiceImpl implements FileService{
 		
 		ArrayList<UploadFile> file_list = getFiles(inFile.getNotice_id(), "notice");
 		if(file_list.size() > 0) {
-			System.out.println(file_list.get(0));
 			result = deleteFile(file_list.get(0).getFilePath());
 			Boolean result2 = saveFile(file, storedFileName);
 			if(result && result2) {

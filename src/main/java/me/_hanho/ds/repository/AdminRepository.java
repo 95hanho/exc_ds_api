@@ -51,6 +51,12 @@ public class AdminRepository {
 		return adminMapper.getAdminSchedule2(enroll_id);
 	}
 
+	public void setSchedules(List<Schedule> param_schedule_list) {
+		param_schedule_list.stream().forEach(schedule -> {
+			adminMapper.setSchedule(schedule);
+		});
+	}
+
 	public void updateSchedule(Schedule schedule) {
 		adminMapper.updateSchedule(schedule);
 	}
@@ -82,6 +88,15 @@ public class AdminRepository {
 			
 		}
 		return student_list;
+	}
+	
+	public List<User> getStudents(List<String> schedule_codes, boolean b) {
+		if(b) {
+			return adminMapper.getStudents(schedule_codes);
+		} else {
+			return adminMapper.getStudentsWithoutWait(schedule_codes);
+		}
+		
 	}
 
 	public void updatePresent(List<String> member_no, String schedule_code, String type, String description) {
@@ -196,6 +211,13 @@ public class AdminRepository {
 	public List<Popup> getPopups() {
 		return adminMapper.getPopups();
 	}
+
+	public Schedule getScheduleLatest() {
+		return adminMapper.getScheduleLatest();
+	}
+
+
+
 
 
 

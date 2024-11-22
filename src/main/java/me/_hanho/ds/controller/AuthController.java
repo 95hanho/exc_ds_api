@@ -36,7 +36,6 @@ public class AuthController {
 			, HttpServletRequest request) {
 		System.out.println("login");
 		Map<String, Object> result = new HashMap<String, Object>();
-		System.out.println("param User : " + user);
 		
 		User checkUser = userService.getUser(user);
 		if(checkUser != null) {
@@ -58,7 +57,6 @@ public class AuthController {
 					result_count = userService.insertToken(token);
 				}
 			}
-			System.out.println(result_count);
 
 			result.put("msg", "success");
 			result.put("access_token", accessToken);
@@ -100,7 +98,6 @@ public class AuthController {
 			Token token = new Token(refresh_token, agent, ipAddress);
 			User checkUser = userService.getUser(token);
 			
-			System.out.println(checkUser);
 			if(checkUser != null) {
 				User onlyId = new User();
 				onlyId.setLogin_id(checkUser.getLogin_id());
@@ -108,8 +105,6 @@ public class AuthController {
 				String refreshToken = tokenService.makeJwtToken(180L);
 				Token token2 = new Token(refreshToken, agent, ipAddress, checkUser.getLogin_id());
 				int result_count = userService.updateToken(token2);
-				
-				System.out.println("result_count : " + result_count);
 				
 				Map<String, Object> dataMap = new HashMap<String, Object>();
 				result.put("msg", "success");

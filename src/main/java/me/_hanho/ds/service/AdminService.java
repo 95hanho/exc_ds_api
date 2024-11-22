@@ -19,12 +19,18 @@ public interface AdminService {
 	ArrayList<Schedule> getAdminSchedules();
 	Schedule getAdminSchedule(String schedule_code);
 	Schedule getAdminSchedule(int enroll_id);
+	
+	Schedule getScheduleLatest();
+	
+	void setSchedules(List<Schedule> param_schedule_list);
 
 	void updateSchedule(Schedule schedule);
 
 	void updateScheduleStatus(List<String> schedule_codes, String type);
 
 	ArrayList<Enroll> getAdminStudents(String schedule_code);
+	
+	List<User> getStudents(List<String> schedule_codes, boolean b);
 	
 	void deleteStudent(int enroll_id, int member_no, String login_id);
 
@@ -64,6 +70,9 @@ public interface AdminService {
 	void updatePopup(MultipartFile file2, Boolean file2_status, int i);
 	
 	void createReview(Review review);
+	
+	
+	
 	
 	
 

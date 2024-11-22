@@ -74,8 +74,6 @@ public class TalktalkController {
 		
 		Talktalk talktalk = talktalkService.getTalktalk(id);
 		
-		System.out.println(talktalk);
-		
 		if(talktalk != null) {
 			ArrayList<Comment> comment_list = talktalkService.getComments(id);
 			talktalk.setComment_list(comment_list);
@@ -95,7 +93,6 @@ public class TalktalkController {
    		System.out.println("setTalk");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
-   		System.out.println(talktalk);
 		User user = userService.getUser(login_id);
 		talktalk.setWriter_login_id(login_id);
 		talktalk.setWriter(user.getName());
@@ -103,8 +100,6 @@ public class TalktalkController {
 		int create_count = talktalkService.createTalktalk(talktalk);
 		
 		Talktalk resultNotice = talktalkService.getTalktalk();
-		
-		System.out.println(resultNotice);
 		
 		if(create_count > 0) {
 			result.put("msg", "success");
@@ -126,7 +121,6 @@ public class TalktalkController {
    		User user = userService.getUser(login_id);
    		talktalk.setWriter_login_id(login_id);
    		talktalk.setWriter(user.getName());
-		System.out.println(talktalk);
 		
 		int update_count = talktalkService.updateTalktalk(talktalk);
 		
@@ -149,8 +143,6 @@ public class TalktalkController {
    		
    		int delete_result = talktalkService.deleteTalktalk(id);
 		
-		System.out.println(delete_result);
-		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
    	}
@@ -162,8 +154,6 @@ public class TalktalkController {
    		
    		int hit_result = talktalkService.talktalkUpHit(id);
 
-		System.out.println(hit_result);
-		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
    	}
@@ -182,8 +172,6 @@ public class TalktalkController {
 		
 		Comment res_comment = talktalkService.getComment();
 		
-		System.out.println(res_comment);
-		
 		result.put("data", res_comment);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -194,11 +182,7 @@ public class TalktalkController {
    		System.out.println("updateTalkComment");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
-   		System.out.println(comment);
-		
 		int update_result = talktalkService.updateComment(comment);
-		
-		System.out.println(update_result);
 		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -210,8 +194,6 @@ public class TalktalkController {
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		int delete_result = talktalkService.deleteComment(id);
-		
-		System.out.println(delete_result);
 		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);

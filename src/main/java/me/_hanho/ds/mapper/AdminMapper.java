@@ -21,6 +21,10 @@ public interface AdminMapper {
 	ArrayList<Schedule> getAdminSchedules();
 	Schedule getAdminSchedule(String schedule_code);
 	Schedule getAdminSchedule2(int enroll_id);
+	
+	Schedule getScheduleLatest();
+	
+	void setSchedule(Schedule schedule);
 
 	void updateSchedule(Schedule schedule);
 	void updateProgramTime(Schedule schedule);
@@ -30,6 +34,9 @@ public interface AdminMapper {
 	int updateScheduleOpenStatus(@Param("schedule_codes") List<String> schedule_codes);
 
 	ArrayList<Enroll> getAdminStudents(String schedule_code);
+	
+	List<User> getStudents(@Param("schedule_codes") List<String> schedule_codes);
+	List<User> getStudentsWithoutWait(@Param("schedule_codes") List<String> schedule_codes);
 
 	int updatePresent(@Param("member_nos") List<String> member_nos, @Param("schedule_code") String schedule_code,
 			@Param("type") String type, @Param("description") String description, @Param("msg") String msg);
@@ -80,10 +87,6 @@ public interface AdminMapper {
 	void updatePopup(@Param("file_status") Boolean file_status, @Param("type") int type);
 	
 	void createReview(Review review);
-
-
 	
-	
-
 	
 }

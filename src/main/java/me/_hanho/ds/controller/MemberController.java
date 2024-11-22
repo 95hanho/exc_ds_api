@@ -37,8 +37,6 @@ public class MemberController {
 		System.out.println("getUserInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		System.out.println("param login_id : " + login_id);
-		
 		if(login_id != null) {
 			User user = userService.getUser(login_id);
 			result.put("msg", "success");

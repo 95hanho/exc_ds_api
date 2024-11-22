@@ -72,7 +72,6 @@ private static final String SECRET_KEY = "HANHOSEONGTOKENTESTOnlyICanChangeMyLif
 				.build()
 				.parseClaimsJws(token)
 				.getBody();
-		System.out.println("claims = " + claims.toString());
 		
 		return claims;
 	}

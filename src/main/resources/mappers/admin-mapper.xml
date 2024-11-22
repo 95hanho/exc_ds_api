@@ -95,6 +95,18 @@
 		JOIN program_category pc ON p.category_num = pc.cate_num
 		WHERE s.s_id = (SELECT s_id FROM enroll WHERE enrol_id = #{enroll_id})
 	</select>
+	<select id="getScheduleLatest">
+		SELECT *
+		FROM schedule
+		ORDER BY s_id DESC limit 1
+	</select>
+	<insert id="setSchedule">
+		INSERT INTO schedule(schedule_code, schedule_enrol_start_date, schedule_enrol_end_date, schedule_start_date, 
+		online, part_type, enrol_limit, schedule_number, program_num)
+		VALUES (#{schedule_code}, #{schedule_enrol_start_date}, #{schedule_enrol_end_date}, #{schedule_start_date},
+		#{online}, #{part_type}, #{enrol_limit}, #{schedule_number}, 
+		(SELECT program_num FROM program WHERE program_code = #{program_code}))
+	</insert>
 	<update id="updateSchedule">
 		UPDATE schedule
 		SET schedule_start_date = #{schedule_start_date},
@@ -162,6 +174,49 @@
 		JOIN user u ON e.login_id = u.login_id
 		JOIN WaitingStatus ws ON e.enrol_id = ws.enrol_id
 		WHERE e.s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code})
+	</select>
+	<select id="getStudents">
+		SELECT u.member_no, u.name, u.member_type, u.member_hp, u.member_email, 
+		s.schedule_number, s.schedule_start_date, p.program_name, u.team_name, e.created_at, 
+		e.attendance_msg, e.attendance_description
+		FROM user u
+		JOIN enroll e ON e.login_id = u.login_id
+		JOIN schedule s ON e.s_id = s.s_id
+		JOIN program p ON p.program_num = s.program_num
+		WHERE schedule_code IN
+	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
+	        #{schedule_code}
+	    </foreach>
+	</select>
+	<select id="getStudentsWithoutWait">
+		WITH RankedEnrollments AS (
+		    SELECT 
+		        e.enrol_id,
+		        e.s_id,
+		        e.created_at AS enrol_regdate,
+		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
+		    FROM enroll e
+		),
+		WaitingStatus AS (
+		    SELECT 
+		        re.enrol_id,
+		        re.s_id,
+		        re.row_num > s.enrol_limit AS enrol_waiting_status
+		    FROM RankedEnrollments re
+		    JOIN schedule s ON re.s_id = s.s_id
+		)
+		SELECT u.member_no, u.name, u.member_type, u.member_hp, u.member_email, 
+		s.schedule_number, s.schedule_start_date, p.program_name, u.team_name, e.created_at, 
+		e.attendance_msg, e.attendance_description
+		FROM user u
+		JOIN enroll e ON e.login_id = u.login_id
+		JOIN schedule s ON e.s_id = s.s_id
+		JOIN program p ON p.program_num = s.program_num
+		JOIN WaitingStatus ws ON e.enrol_id = ws.enrol_id
+		WHERE schedule_code IN
+	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
+	        #{schedule_code}
+	    </foreach> AND ws.enrol_waiting_status = false
 	</select>
 	<update id="updatePresent">
 		UPDATE enroll

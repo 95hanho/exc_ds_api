@@ -44,7 +44,6 @@ public class NoticeController {
 	public ResponseEntity<Map<String, Object>> getNotices(@RequestParam("page") int page
 			, @RequestParam("size") int size) {
 		System.out.println("getNotices");
-		System.out.println("page : " + page + ", size : " + size);
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int notice_count = noticeService.getNoticeCount();
@@ -76,8 +75,6 @@ public class NoticeController {
 		
 		Notice notice = noticeService.getNotice(id);
 		
-		System.out.println(notice);
-		
 		if(notice != null) {
 			ArrayList<Comment> comment_list = noticeService.getComments(id);
 			notice.setComment_list(comment_list);
@@ -99,7 +96,6 @@ public class NoticeController {
 		System.out.println("addQna");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		System.out.println(notice);
 		User user = userService.getUser(login_id);
 		notice.setWriter_login_id(login_id);
 		notice.setWriter(user.getName());
@@ -114,8 +110,6 @@ public class NoticeController {
 		int create_count = noticeService.createNotice(notice);
 		
 		Notice resultNotice = noticeService.getNotice();
-		
-		System.out.println(resultNotice);
 		
 		if(create_count > 0) {
 			result.put("msg", "success");
@@ -143,8 +137,6 @@ public class NoticeController {
 			notice.setType("N");
 			notice.setTop(0);
 		}
-		System.out.println(notice);
-		
 		int update_count = noticeService.updateNotice(notice);
 		
 		Notice curNotice = noticeService.getNotice(notice.getId());
@@ -165,8 +157,6 @@ public class NoticeController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int delete_result = noticeService.deleteNotice(id);
-		
-		System.out.println(delete_result);
 		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -219,8 +209,6 @@ public class NoticeController {
 		
 		int hit_result = noticeService.noticeUpHit(id);
 
-		System.out.println(hit_result);
-		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -240,8 +228,6 @@ public class NoticeController {
 		Comment res_comment = noticeService.getComment();
 		noticeService.updateNoticeManagerLatest(res_comment.getNotice_id(), user.getGrant() == 90);
 		
-		System.out.println(res_comment);
-		
 		result.put("data", res_comment);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -252,11 +238,7 @@ public class NoticeController {
 		System.out.println("updateQnaComment");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		System.out.println(comment);
-		
 		int update_result = noticeService.updateComment(comment);
-		
-		System.out.println(update_result);
 		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -268,8 +250,6 @@ public class NoticeController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int delete_result = noticeService.deleteComment(id);
-		
-		System.out.println(delete_result);
 		
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);

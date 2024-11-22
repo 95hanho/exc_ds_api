@@ -35,10 +35,6 @@ public class ApplicationController {
 		
 		ArrayList<Schedule> schedule_list = scheduleService.getSchedules(login_id);
 		
-		for(Schedule schedule : schedule_list) {
-			System.out.println(schedule);
-		}
-		
 		result.put("data", schedule_list);
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -53,8 +49,6 @@ public class ApplicationController {
 		try {
 			scheduleService.createEnroll(schedule_code, login_id);
 			Schedule schedule = scheduleService.getSchedule(schedule_code, login_id);
-			
-			System.out.println(schedule);
 			
 			result.put("schedule_info", schedule);
 			result.put("msg", "success");

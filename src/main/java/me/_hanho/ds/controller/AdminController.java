@@ -1,6 +1,8 @@
 package me._hanho.ds.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletResponse;
 import me._hanho.ds.model.CancelLog;
 import me._hanho.ds.model.Enroll;
+import me._hanho.ds.model.ExcelRequest;
 import me._hanho.ds.model.Popup;
 import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
@@ -73,31 +77,99 @@ public class AdminController {
 	}
 	// 강의 프로그램 차수 등록
 	@PostMapping("/schedule/info")
-	public ResponseEntity<Map<String, Object>> addProgramSchedules() {
+	public ResponseEntity<Map<String, Object>> addProgramSchedules(@RequestBody ExcelRequest excelData) {
 		System.out.println("addProgramSchedules");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<Schedule> param_schedule_list = new ArrayList<>();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		Schedule latest_schedule = adminService.getScheduleLatest();
+		int last_index = Integer.parseInt(latest_schedule.getSchedule_code());
+		try {
+			for(int i = 0; i < excelData.getList().size(); i++) {
+				List<String> excel = excelData.getList().get(i);
+				Schedule schedule = new Schedule();
+				schedule.setSchedule_code("" + ++last_index);
+				schedule.setSchedule_number(Integer.parseInt(excel.get(0)));
+				schedule.setSchedule_start_date(formatter.parse(excel.get(1)));
+				schedule.setSchedule_enrol_start_date(formatter.parse(excel.get(2)));
+				schedule.setSchedule_enrol_end_date(formatter.parse(excel.get(3)));
+				schedule.setEnrol_limit(Integer.parseInt(excel.get(4)));
+				schedule.setPart_type(excel.get(5));
+				schedule.setProgram_code(excel.get(6));
+				schedule.setOnline(excel.get(7).charAt(0));
+				param_schedule_list.add(schedule);
+			}
+		} catch(ParseException e) {
+			result.put("msg", "fail");
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
+		
+		adminService.setSchedules(param_schedule_list);
 
 		result.put("msg", "success");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	// 체크강의 설정(폐강, 숨김, 엑셀다운로드)
 	@GetMapping("/control/user")
-	public ResponseEntity<Map<String, Object>> actionCheckedPrograms(@RequestParam("type") String type,
-			@RequestParam("schedule_code") List<String> schedule_codes) {
+	public Object actionCheckedPrograms(@RequestParam("type") String type,
+			@RequestParam("schedule_code") List<String> schedule_codes, 
+			HttpServletResponse response) throws IOException {
 		System.out.println("actionCheckedPrograms");
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		System.out.println(schedule_codes);
-		System.out.println(type);
+		List<User> student_list = null;
 		
 		// 폐강
 		if(type.equals("SC") || type.equals("OPEN_STATUS")) {
 			adminService.updateScheduleStatus(schedule_codes, type);
-		// 숨김
-		} else if(type == "EXCEL_WITH_WAIT") {
-			
-		} else if(type == "EXCEL") {
-			
+		// 대기자포함 엑셀
+		} else if(type.equals("EXCEL_WITH_WAIT")) {
+			student_list = adminService.getStudents(schedule_codes, true);
+		}
+		// 대기자제외 엑셀 
+		else if(type.equals("EXCEL")) {
+			student_list = adminService.getStudents(schedule_codes, false);
+		}
+		
+		if(type.equals("EXCEL_WITH_WAIT") || type.equals("EXCEL")) {
+			// 2. 엑셀 파일 생성
+	        Workbook workbook = new XSSFWorkbook();
+	        Sheet sheet = workbook.createSheet("취소 사유 목록");
+
+	        // 3. 헤더 작성
+	        Row headerRow = sheet.createRow(0);
+	        String[] headers = {"사번", "이름", "유형", "아이디", "연락처", "이메일", "차수", "일자", "선택프로그램", "부서", "신청일", 
+	        		"출결", "출결 특이사항"};
+	        for (int i = 0; i < headers.length; i++) {
+	            Cell cell = headerRow.createCell(i);
+	            cell.setCellValue(headers[i]);
+	        }
+
+	        // 4. 데이터 작성
+	        int rowIndex = 1; // 헤더 다음 행부터 작성
+	        for (User student : student_list) {
+	            Row row = sheet.createRow(rowIndex++);
+	            row.createCell(0).setCellValue(student.getMember_no());
+	            row.createCell(1).setCellValue(student.getName());
+	            row.createCell(2).setCellValue(student.getMember_type());
+	            row.createCell(3).setCellValue(student.getMember_hp());
+	            row.createCell(4).setCellValue(student.getMember_email());
+	            row.createCell(5).setCellValue(student.getSchedule_number());
+	            row.createCell(6).setCellValue(student.getSchedule_start_date());
+	            row.createCell(7).setCellValue(student.getProgram_name());
+	            row.createCell(8).setCellValue(student.getTeam_name());
+	            row.createCell(9).setCellValue(student.getCreated_at());
+	            row.createCell(10).setCellValue(student.getAttendance_msg());
+	            row.createCell(11).setCellValue(student.getAttendance_description());
+	        }
+
+	        // 5. HTTP 응답에 엑셀 파일 첨부
+	        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	        response.setHeader("Content-Disposition", "attachment; filename=cancel_list.xlsx");
+
+	        workbook.write(response.getOutputStream());
+	        workbook.close();
 		}
 
 		result.put("msg", "success");
@@ -256,8 +328,6 @@ public class AdminController {
 		System.out.println("setProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		System.out.println(program);
-		
 		// "4H (8:30~12:30 / 13:30~17:30)" time이랑 ment로 구분
         String[] parts = ((String) program.getTime()).split(" ", 2);
         int time = Integer.parseInt(parts[0].replaceAll("\\D", ""));
@@ -365,8 +435,6 @@ public class AdminController {
 	public ResponseEntity<Map<String, Object>> addReview(@ModelAttribute Review review) {
 		System.out.println("addReview");
 		Map<String, Object> result = new HashMap<String, Object>();
-		
-		System.out.println(review);
 		
 		adminService.createReview(review);
 
