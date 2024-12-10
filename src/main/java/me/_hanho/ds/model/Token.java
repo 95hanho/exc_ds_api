@@ -31,7 +31,6 @@ public class Token {
 		this.connect_ip = connect_ip;
 	}
 
-
 	public Token(String refresh_token, String agent, String connect_ip, String login_id) {
 		super();
 		this.refresh_token = refresh_token;

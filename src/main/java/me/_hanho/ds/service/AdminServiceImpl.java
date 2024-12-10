@@ -15,7 +15,6 @@ import me._hanho.ds.model.Program;
 import me._hanho.ds.model.ProgramCategory;
 import me._hanho.ds.model.Review;
 import me._hanho.ds.model.Schedule;
-import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
 import me._hanho.ds.repository.AdminRepository;
 

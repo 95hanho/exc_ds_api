@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonUtils {
 	
-	// JSON 문자열을 List로 변환
+	// JSON 문자열(ex. "["2024-11-29 12:00", "2024-12-09 12:00"]")을 List<Date>로 변환
 	public static List<Date> parseScheduleAfterDate(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");

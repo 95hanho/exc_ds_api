@@ -30,11 +30,9 @@ public class UserRepository {
 		return userMapper.insertToken(token);
 	}
 	public int updateToken(Token token) {
+		int token_num = userMapper.get_token_num(token);
+		token.setToken_num(token_num);
 		return userMapper.updateToken(token);
 	}
-
-
-
-
 
 }

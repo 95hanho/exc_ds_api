@@ -14,7 +14,7 @@ import me._hanho.ds.model.User;
 
 @Service
 public class TokenService {
-private static final String SECRET_KEY = "HANHOSEONGTOKENTESTOnlyICanChangeMyLifeNoOneCanDoItForMe";
+	private static final String SECRET_KEY = "HANHOSEONGTOKENTESTOnlyICanChangeMyLifeNoOneCanDoItForMe";
 	
 	/**
 	 * 토큰 생성하기

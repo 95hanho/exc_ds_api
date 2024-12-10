@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import me._hanho.ds.model.Enroll;
 import me._hanho.ds.model.Schedule;
 import me._hanho.ds.service.ScheduleService;
 

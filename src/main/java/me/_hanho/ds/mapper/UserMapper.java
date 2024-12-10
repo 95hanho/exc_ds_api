@@ -16,7 +16,10 @@ public interface UserMapper {
 
 	int insertToken(Token token);
 
+	int get_token_num(Token token);
+	
 	int updateToken(Token token);
+	
 
 
 }

@@ -24,9 +24,16 @@
 		INSERT INTO token(refresh_token, agent, connect_ip, login_id) 
 		VALUES (#{refresh_token}, #{agent}, #{connect_ip}, #{login_id})
 	</insert>
+	<select id="get_token_num">
+		SELECT token_num
+		FROM token
+		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+		ORDER BY created_at DESC
+		LIMIT 1
+	</select>
 	<update id="updateToken">
 		UPDATE token
 		SET refresh_token = #{refresh_token}
-		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+		WHERE token_num = #{token_num}
 	</update>
 </mapper>
