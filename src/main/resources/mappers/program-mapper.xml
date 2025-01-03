@@ -3,27 +3,27 @@
 <mapper namespace="me._hanho.ds.mapper.ProgramMapper">
 	<select id="getPrograms">
 		SELECT *
-		FROM program
+		FROM ds_program
 	</select>
 	<select id="getPrograms2">
 		SELECT p.program_num, program_code, program_name, program_status, filePath AS program_header_img_url_v2, program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num
-		FROM program p
-		JOIN file f ON p.program_num = f.program_num
+		FROM ds_program p
+		JOIN ds_file f ON p.program_num = f.program_num
 		WHERE category_num = #{category_num} AND program_status = 'Y'
 	</select>
 	<select id="getProgramCategory">
 		SELECT *
-		FROM program_category;
+		FROM ds_program_category;
 	</select>
 	<select id="getProgramAndCategory">
 		SELECT program_name, title AS category_name, category_bg_url, time, time_ment, place, program_content
-		FROM program p
-		JOIN program_category pc ON p.category_num = pc.cate_num
+		FROM ds_program p
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
 		WHERE program_code = #{program_code}
 	</select>
 	<select id="getReviews">
 		SELECT *
-		FROM review
-		WHERE program_num = (SELECT program_num FROM program WHERE program_code = #{program_code})
+		FROM ds_review
+		WHERE program_num = (SELECT program_num FROM ds_program WHERE program_code = #{program_code})
 	</select>
 </mapper>

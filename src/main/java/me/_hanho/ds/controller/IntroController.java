@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,15 @@ import me._hanho.ds.service.ProgramService;
 @RequestMapping("/v1/introduce")
 public class IntroController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(IntroController.class);
+	
 	@Autowired
 	private ProgramService programService;
 
 	// 프로그램소개 리스트 가져오기
 	@GetMapping("/info")
 	public ResponseEntity<Map<String, Object>> getIntros() {
-		System.out.println("getIntros");
+		logger.info("getIntros");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<ProgramCategory> catelist = programService.getProgramCategory();
@@ -41,7 +45,7 @@ public class IntroController {
 	// 프로그램 상세조회
 	@GetMapping("/detail/{program_code}")
 	public ResponseEntity<Map<String, Object>> getIntroDetail(@PathVariable("program_code") String program_code) {
-		System.out.println("getIntroDetail");
+		logger.info("getIntroDetail");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		Program program = programService.getProgramAndCategory(program_code);

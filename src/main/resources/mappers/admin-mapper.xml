@@ -17,7 +17,7 @@
 		    s.enrol_limit,
 		    (
 		        SELECT COUNT(*)
-		        FROM enroll e
+		        FROM ds_enroll e
 		        WHERE e.s_id = s.s_id
 		    ) AS enrol_count,
 		    s.schedule_status,
@@ -26,10 +26,10 @@
 		    s.schedule_group_num,
 		    p.program_code,
 		    pc.title AS group_title
-		FROM schedule s
-		JOIN program p ON p.program_num = s.program_num
-		JOIN program_category pc ON p.category_num = pc.cate_num
-		LEFT JOIN enroll e ON e.s_id = s.s_id
+		FROM ds_schedule s
+		JOIN ds_program p ON p.program_num = s.program_num
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
+		LEFT JOIN ds_enroll e ON e.s_id = s.s_id
 		GROUP BY s.s_id
 		ORDER BY s.schedule_start_date DESC
 	</select>
@@ -49,7 +49,7 @@
 		    s.enrol_limit,
 		    (
 		        SELECT COUNT(*)
-		        FROM enroll e
+		        FROM ds_enroll e
 		        WHERE e.s_id = s.s_id
 		    ) AS enrol_count,
 		    s.schedule_status,
@@ -58,10 +58,10 @@
 		    s.schedule_group_num,
 		    p.program_code,
 		    pc.title AS group_title
-		FROM schedule s
-		JOIN program p ON p.program_num = s.program_num
-		JOIN program_category pc ON p.category_num = pc.cate_num
-		LEFT JOIN enroll e ON e.s_id = s.s_id
+		FROM ds_schedule s
+		JOIN ds_program p ON p.program_num = s.program_num
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
+		LEFT JOIN ds_enroll e ON e.s_id = s.s_id
 		WHERE s.schedule_code = #{schedule_code}
 		GROUP BY s.s_id
 		ORDER BY s.schedule_start_date DESC
@@ -82,7 +82,7 @@
 		    s.enrol_limit,
 		    (
 		        SELECT COUNT(*)
-		        FROM enroll e
+		        FROM ds_enroll e
 		        WHERE e.s_id = s.s_id
 		    ) AS enrol_count,
 		    s.schedule_status,
@@ -90,25 +90,25 @@
 		    s.schedule_group_num,
 		    p.program_code,
 		    pc.title AS group_title
-		FROM schedule s
-		JOIN program p ON p.program_num = s.program_num
-		JOIN program_category pc ON p.category_num = pc.cate_num
-		WHERE s.s_id = (SELECT s_id FROM enroll WHERE enrol_id = #{enroll_id})
+		FROM ds_schedule s
+		JOIN ds_program p ON p.program_num = s.program_num
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
+		WHERE s.s_id = (SELECT s_id FROM ds_enroll WHERE enrol_id = #{enroll_id})
 	</select>
 	<select id="getScheduleLatest">
 		SELECT *
-		FROM schedule
+		FROM ds_schedule
 		ORDER BY s_id DESC limit 1
 	</select>
 	<insert id="setSchedule">
-		INSERT INTO schedule(schedule_code, schedule_enrol_start_date, schedule_enrol_end_date, schedule_start_date, 
+		INSERT INTO ds_schedule(schedule_code, schedule_enrol_start_date, schedule_enrol_end_date, schedule_start_date, 
 		online, part_type, enrol_limit, schedule_number, program_num)
 		VALUES (#{schedule_code}, #{schedule_enrol_start_date}, #{schedule_enrol_end_date}, #{schedule_start_date},
 		#{online}, #{part_type}, #{enrol_limit}, #{schedule_number}, 
-		(SELECT program_num FROM program WHERE program_code = #{program_code}))
+		(SELECT program_num FROM ds_program WHERE program_code = #{program_code}))
 	</insert>
 	<update id="updateSchedule">
-		UPDATE schedule
+		UPDATE ds_schedule
 		SET schedule_start_date = #{schedule_start_date},
 		online = #{online},
 		part_type = #{part_type}, schedule_number = #{schedule_number},
@@ -117,13 +117,13 @@
 		WHERE schedule_code = #{schedule_code}
 	</update>
 	<update id="updateProgramTime">
-		UPDATE program
+		UPDATE ds_program
 		SET time = #{time}
-		WHERE program_num = (SELECT program_num FROM schedule WHERE schedule_code = #{schedule_code})
+		WHERE program_num = (SELECT program_num FROM ds_schedule WHERE schedule_code = #{schedule_code})
 	</update>
 	
 	<update id="updateScheduleStatus">
-		UPDATE schedule
+		UPDATE ds_schedule
 		SET schedule_status = 1 - schedule_status
 		WHERE schedule_code IN
 	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
@@ -131,7 +131,7 @@
 	    </foreach>
 	</update>
 	<update id="updateScheduleOpenStatus">
-		UPDATE schedule
+		UPDATE ds_schedule
 		SET open_status = 1 - open_status
 		WHERE schedule_code IN
 	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
@@ -145,7 +145,7 @@
 		        e.s_id,
 		        e.created_at AS enrol_regdate,
 		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
-		    FROM enroll e
+		    FROM ds_enroll e
 		),
 		WaitingStatus AS (
 		    SELECT 
@@ -153,7 +153,7 @@
 		        re.s_id,
 		        re.row_num > s.enrol_limit AS enrol_waiting_status
 		    FROM RankedEnrollments re
-		    JOIN schedule s ON re.s_id = s.s_id
+		    JOIN ds_schedule s ON re.s_id = s.s_id
 		)
 		SELECT
 		    e.enrol_id,
@@ -170,19 +170,19 @@
 		    u.team_name,
 		    e.login_id AS member_login_id,
 		    u.name AS member_name
-		FROM enroll e
-		JOIN user u ON e.login_id = u.login_id
+		FROM ds_enroll e
+		JOIN ds_user u ON e.login_id = u.login_id
 		JOIN WaitingStatus ws ON e.enrol_id = ws.enrol_id
-		WHERE e.s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code})
+		WHERE e.s_id = (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code})
 	</select>
 	<select id="getStudents">
 		SELECT u.member_no, u.name, u.member_type, u.member_hp, u.member_email, 
 		s.schedule_number, s.schedule_start_date, p.program_name, u.team_name, e.created_at, 
 		e.attendance_msg, e.attendance_description
-		FROM user u
-		JOIN enroll e ON e.login_id = u.login_id
-		JOIN schedule s ON e.s_id = s.s_id
-		JOIN program p ON p.program_num = s.program_num
+		FROM ds_user u
+		JOIN ds_enroll e ON e.login_id = u.login_id
+		JOIN ds_schedule s ON e.s_id = s.s_id
+		JOIN ds_program p ON p.program_num = s.program_num
 		WHERE schedule_code IN
 	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
 	        #{schedule_code}
@@ -195,7 +195,7 @@
 		        e.s_id,
 		        e.created_at AS enrol_regdate,
 		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
-		    FROM enroll e
+		    FROM ds_enroll e
 		),
 		WaitingStatus AS (
 		    SELECT 
@@ -203,15 +203,15 @@
 		        re.s_id,
 		        re.row_num > s.enrol_limit AS enrol_waiting_status
 		    FROM RankedEnrollments re
-		    JOIN schedule s ON re.s_id = s.s_id
+		    JOIN ds_schedule s ON re.s_id = s.s_id
 		)
 		SELECT u.member_no, u.name, u.member_type, u.member_hp, u.member_email, 
 		s.schedule_number, s.schedule_start_date, p.program_name, u.team_name, e.created_at, 
 		e.attendance_msg, e.attendance_description
-		FROM user u
-		JOIN enroll e ON e.login_id = u.login_id
-		JOIN schedule s ON e.s_id = s.s_id
-		JOIN program p ON p.program_num = s.program_num
+		FROM ds_user u
+		JOIN ds_enroll e ON e.login_id = u.login_id
+		JOIN ds_schedule s ON e.s_id = s.s_id
+		JOIN ds_program p ON p.program_num = s.program_num
 		JOIN WaitingStatus ws ON e.enrol_id = ws.enrol_id
 		WHERE schedule_code IN
 	    <foreach item="schedule_code" index="index" collection="schedule_codes" open="(" separator="," close=")">
@@ -219,55 +219,55 @@
 	    </foreach> AND ws.enrol_waiting_status = false
 	</select>
 	<update id="updatePresent">
-		UPDATE enroll
+		UPDATE ds_enroll
 		SET attendance_type = #{type}, attendance_msg = #{msg}, attendance_description = #{description}
-		WHERE s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code})
+		WHERE s_id = (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code})
 		AND login_id IN
 	    <foreach item="member_no" index="index" collection="member_nos" open="(" separator="," close=")">
-	        (SELECT login_id FROM user WHERE member_no = #{member_no})
+	        (SELECT login_id FROM ds_user WHERE member_no = #{member_no})
 	    </foreach>
 	</update>
 	<delete id="deleteStudent">
 		DELETE e
-		FROM enroll e
+		FROM ds_enroll e
 		JOIN (
-		    SELECT s_id FROM enroll WHERE enrol_id = #{enroll_id}
+		    SELECT s_id FROM ds_enroll WHERE enrol_id = #{enroll_id}
 		) temp ON e.s_id = temp.s_id
-		JOIN user u ON e.login_id = u.login_id
+		JOIN ds_user u ON e.login_id = u.login_id
 		WHERE u.member_no = #{member_no};
 	</delete>
 	<select id="getMember_no">
 		SELECT member_no
-		FROM user
-		WHERE login_id = (SELECT login_id FROM enroll WHERE enrol_id = #{enrol_id})
+		FROM ds_user
+		WHERE login_id = (SELECT login_id FROM ds_enroll WHERE enrol_id = #{enrol_id})
 	</select>
 	<delete id="deleteStudent2">
-		DELETE FROM enroll
-		WHERE login_id = (SELECT login_id FROM user WHERE member_no = #{member_no}) 
-		AND s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}) 
+		DELETE FROM ds_enroll
+		WHERE login_id = (SELECT login_id FROM ds_user WHERE member_no = #{member_no}) 
+		AND s_id = (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code}) 
 	</delete>
 	<update id="createCancelLog">
-		INSERT INTO cancel_log(reason, flag, s_id, login_id, executor)
-		VALUES (#{reason}, '취소', (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}), 
-		(SELECT login_id FROM user WHERE member_no = #{member_no}),
+		INSERT INTO ds_cancel_log(reason, flag, s_id, login_id, executor)
+		VALUES (#{reason}, '취소', (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code}), 
+		(SELECT login_id FROM ds_user WHERE member_no = #{member_no}),
 		#{executor})
 	</update>
 	<update id="createCancelLog2">
-		INSERT INTO cancel_log(flag, s_id, login_id, executor)
-		VALUES (#{flag}, (SELECT s_id FROM enroll WHERE enrol_id = #{enroll_id}), 
-		(SELECT login_id FROM user WHERE member_no = #{member_no}),
+		INSERT INTO ds_cancel_log(flag, s_id, login_id, executor)
+		VALUES (#{flag}, (SELECT s_id FROM ds_enroll WHERE enrol_id = #{enroll_id}), 
+		(SELECT login_id FROM ds_user WHERE member_no = #{member_no}),
 		#{login_id})
 	</update>
 	<update id="updateStudent">
-		UPDATE enroll
-		SET login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		UPDATE ds_enroll
+		SET login_id = (SELECT login_id FROM ds_user WHERE member_no = #{member_no})
 		WHERE enrol_id = #{enroll_id}
 	</update>
 	<!-- -->
 	<select id="userSearch">
 		SELECT login_id AS member_login_id, name AS member_name, member_no, member_type, member_hp,
 		member_insa_number, team_name
-		FROM user
+		FROM ds_user
 		WHERE 
 			CASE 
 	        WHEN #{type} = 'login_id' THEN login_id LIKE CONCAT('%', #{keyword}, '%')
@@ -282,10 +282,10 @@
 		cl.created_at AS change_date, 
 		executor, flag, 
 		program_name, schedule_code, schedule_number AS schedule_index, program_name AS title
-		FROM cancel_log cl
-		JOIN schedule s ON cl.s_id = s.s_id
-		JOIN program p ON s.program_num = p.program_num
-		WHERE cl.login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		FROM ds_cancel_log cl
+		JOIN ds_schedule s ON cl.s_id = s.s_id
+		JOIN ds_program p ON s.program_num = p.program_num
+		WHERE cl.login_id = (SELECT login_id FROM ds_user WHERE member_no = #{member_no})
 		ORDER BY cl.created_at DESC
 	</select>
 	<select id="getEnrolls">
@@ -295,7 +295,7 @@
 		        e.s_id,
 		        e.login_id,
 		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
-		    FROM enroll e
+		    FROM ds_enroll e
 		),
 		WaitingList AS (
 		    SELECT 
@@ -303,57 +303,57 @@
 		        re.s_id,
 		        re.row_num - s.enrol_limit AS enrol_waiting_rank
 		    FROM RankedEnrollments re
-		    JOIN schedule s ON re.s_id = s.s_id
+		    JOIN ds_schedule s ON re.s_id = s.s_id
 		    WHERE re.row_num > s.enrol_limit
 		)
 		SELECT e.enrol_id, 
 		COALESCE(w.enrol_waiting_rank, 0) AS enrol_waiting_rank,
 		schedule_code, schedule_start_date, program_name AS title
-		FROM enroll e
-		JOIN schedule s ON e.s_id = s.s_id
-		JOIN program p ON s.program_num = p.program_num
+		FROM ds_enroll e
+		JOIN ds_schedule s ON e.s_id = s.s_id
+		JOIN ds_program p ON s.program_num = p.program_num
 		LEFT JOIN WaitingList w ON e.enrol_id = w.enrol_id
-		WHERE e.login_id = (SELECT login_id FROM user WHERE member_no = #{member_no})
+		WHERE e.login_id = (SELECT login_id FROM ds_user WHERE member_no = #{member_no})
 		ORDER BY e.created_at DESC
 	</select>
 	<update id="updateUser">
-		UPDATE user
+		UPDATE ds_user
 		SET member_hp = #{member_hp}, member_type = #{member_type}, team_name = #{team_name}
 		WHERE member_no = #{member_no}
 	</update>
 	<!-- -->
 	<select id="getProgramCategory">
 		SELECT *
-		FROM program_category;
+		FROM ds_program_category;
 	</select>
 	<select id="getPrograms2">
 		SELECT p.program_num, program_code, program_name, program_status, 
 		f.filePath AS program_header_img_url_v2, 
 		program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num
-		FROM program p
-		JOIN file f ON p.program_num = f.program_num
+		FROM ds_program p
+		JOIN ds_file f ON p.program_num = f.program_num
 		WHERE category_num = #{category_num}
 	</select>
 	<select id="getProgramLatest">
 		SELECT *
-		FROM program
+		FROM ds_program
 		order by program_num desc limit 1
 	</select>
 	<insert id="createProgram">
-		INSERT INTO program(program_code, program_name, program_status, program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num)
+		INSERT INTO ds_program(program_code, program_name, program_status, program_new_label, program_hash_tag, time, time_ment, place, program_content, category_num)
 		VALUES (#{program_code}, #{program_name}, 'N', 'Y', #{program_hash_tag}, #{time}, #{time_ment}, #{place}, #{program_content}, 
-		(SELECT cate_num FROM program_category WHERE title = #{program_category})) 
+		(SELECT cate_num FROM ds_program_category WHERE title = #{program_category})) 
 	</insert>
 	<update id="updateProgram">
-		UPDATE program
+		UPDATE ds_program
 		SET program_name = #{program_name}, program_new_label = #{program_new_label},
 		program_hash_tag = #{program_hash_tag}, time = #{time}, time_ment = #{time_ment},
 		place = #{place}, program_content = #{program_content},
-		category_num = (SELECT cate_num FROM program_category WHERE title = #{program_category})
+		category_num = (SELECT cate_num FROM ds_program_category WHERE title = #{program_category})
 		WHERE program_num = #{program_num}
 	</update>
 	<update id="updateProgram_status">
-		UPDATE program
+		UPDATE ds_program
 		SET program_status = CASE 
 		                        WHEN program_status = 'Y' THEN 'N'
 		                        ELSE 'Y'
@@ -363,27 +363,27 @@
 	<!-- -->
 	<select id="getCancels">
 		SELECT id, reason, flag, cl.created_at, s_id, u.name AS login_id, u2.name AS executor
-		FROM cancel_log cl
-		JOIN user u ON u.login_id = cl.login_id
-		JOIN user u2 ON u2.login_id = cl.executor
+		FROM ds_cancel_log cl
+		JOIN ds_user u ON u.login_id = cl.login_id
+		JOIN ds_user u2 ON u2.login_id = cl.executor
 		WHERE flag = '취소'
 		ORDER BY cl.created_at ASC
 	</select>
 	<select id="getPopups">
 		SELECT p.popup_id AS type, status, name
-		FROM popup p 
-		JOIN file f ON f.popup_id = p.popup_id
+		FROM ds_popup p 
+		JOIN ds_file f ON f.popup_id = p.popup_id
 	</select>
 	
 	<update id="updatePopup">
-		UPDATE popup
+		UPDATE ds_popup
 		SET status = #{file_status}
 		WHERE popup_id = #{type}
 	</update>
 	<insert id="createReview">
-		INSERT INTO review(rate, contents, regdate, writer, program_num)
+		INSERT INTO ds_review(rate, contents, regdate, writer, program_num)
 		VALUES (#{review_ring_rate}, #{review_content}, #{review_enrol_date}, #{review_name}, 
-		(SELECT program_num FROM program WHERE program_code = #{program_code}))
+		(SELECT program_num FROM ds_program WHERE program_code = #{program_code}))
 	</insert>
 
 </mapper>

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,8 @@ import me._hanho.ds.service.UserService;
 @RequestMapping("/v1/bbs/notice")
 public class NoticeController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
+	
 	@Autowired
 	private NoticeService noticeService;
 	@Autowired
@@ -43,7 +47,7 @@ public class NoticeController {
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getNotices(@RequestParam("page") int page
 			, @RequestParam("size") int size) {
-		System.out.println("getNotices");
+		logger.info("getNotices");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int notice_count = noticeService.getNoticeCount();
@@ -70,7 +74,7 @@ public class NoticeController {
 	// 공지QnA 상세조회
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<Map<String, Object>> getNotice(@PathVariable("id") int id) {
-		System.out.println("getNotice");
+		logger.info("getNotice");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		Notice notice = noticeService.getNotice(id);
@@ -93,7 +97,7 @@ public class NoticeController {
 	@PostMapping("/write")
 	public ResponseEntity<Map<String, Object>> addQna(@ModelAttribute Notice notice
 			, @RequestAttribute("login_id") String login_id) {
-		System.out.println("addQna");
+		logger.info("addQna");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		User user = userService.getUser(login_id);
@@ -124,7 +128,7 @@ public class NoticeController {
 	@PutMapping("/write")
 	public ResponseEntity<Map<String, Object>> updateNoticeQna(@ModelAttribute Notice notice
 			, @RequestAttribute("login_id") String login_id) {
-		System.out.println("updateNoticeQna");
+		logger.info("updateNoticeQna");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		User user = userService.getUser(login_id);
@@ -153,7 +157,7 @@ public class NoticeController {
 	// 공지QnA 삭제
 	@DeleteMapping("/write/{id}")
 	public ResponseEntity<Map<String, Object>> deleteNoticeQna(@PathVariable("id") int id) {
-		System.out.println("deleteNoticeQna");
+		logger.info("deleteNoticeQna");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int delete_result = noticeService.deleteNotice(id);
@@ -165,7 +169,7 @@ public class NoticeController {
 	@PostMapping("/file")
 	public ResponseEntity<Map<String, Object>> noticeFileUpload(@RequestParam(value="file", required=false) MultipartFile file
 			, @RequestParam("id") int id) {
-		System.out.println("noticeFileUpload");
+		logger.info("noticeFileUpload");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		UploadFile inFile = new UploadFile();
@@ -185,7 +189,7 @@ public class NoticeController {
 	// 공지QnA 파일삭제요청
 	@DeleteMapping("/file/{id}")
 	public ResponseEntity<Map<String, Object>> noticeFileDelete(@PathVariable("id") int id) {
-		System.out.println("noticeFileDelete");
+		logger.info("noticeFileDelete");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<UploadFile> file_list = fileService.getFiles(id, "notice");
@@ -204,7 +208,7 @@ public class NoticeController {
 	// 공지/QnA 조회수
 	@PutMapping("/detail/count/{id}")
 	public ResponseEntity<Map<String, Object>> noticeQnaUpHit(@PathVariable("id") int id) {
-		System.out.println("noticeQnaUpHit");
+		logger.info("noticeQnaUpHit");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int hit_result = noticeService.noticeUpHit(id);
@@ -216,7 +220,7 @@ public class NoticeController {
 	@PostMapping("/comment/write")
 	public ResponseEntity<Map<String, Object>> createQnaComment(@ModelAttribute Comment comment
 			, @RequestAttribute("login_id") String login_id) {
-		System.out.println("createQnaComment");
+		logger.info("createQnaComment");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		User user = userService.getUser(login_id);
@@ -235,7 +239,7 @@ public class NoticeController {
 	// 답글수정
 	@PutMapping("/comment/write")
 	public ResponseEntity<Map<String, Object>> updateQnaComment(@ModelAttribute Comment comment) {
-		System.out.println("updateQnaComment");
+		logger.info("updateQnaComment");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int update_result = noticeService.updateComment(comment);
@@ -246,7 +250,7 @@ public class NoticeController {
 	// 답글 삭제
 	@DeleteMapping("/comment/write/{id}")
 	public ResponseEntity<Map<String, Object>> deleteQnaComment(@PathVariable("id") int id) {
-		System.out.println("deleteQnaComment");
+		logger.info("deleteQnaComment");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int delete_result = noticeService.deleteComment(id);

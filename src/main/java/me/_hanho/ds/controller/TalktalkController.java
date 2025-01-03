@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,8 @@ import me._hanho.ds.service.UserService;
 @RequestMapping("/v1/bbs/talk")
 public class TalktalkController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(TalktalkController.class);
+	
 	@Autowired
 	private TalktalkService talktalkService;
 	
@@ -42,7 +46,7 @@ public class TalktalkController {
     @GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getTalks(@RequestParam("page") int page
 			, @RequestParam("size") int size, @RequestParam(value = "program_code", required = false) String program_code) {
-		System.out.println("getTalks/" + page + "/" + size + "/" + program_code);
+		logger.info("getTalks/" + page + "/" + size + "/" + program_code);
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		int notice_count = talktalkService.getTalktalkCount();
@@ -69,7 +73,7 @@ public class TalktalkController {
 	// 톡톡 상세조회
     @GetMapping("/detail/{id}")
 	public ResponseEntity<Map<String, Object>> getTalk(@PathVariable("id") int id) {
-		System.out.println("getTalk");
+		logger.info("getTalk");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		Talktalk talktalk = talktalkService.getTalktalk(id);
@@ -90,7 +94,7 @@ public class TalktalkController {
     @PostMapping("/write")
    	public ResponseEntity<Map<String, Object>> setTalk(@ModelAttribute Talktalk talktalk
 			, @RequestAttribute("login_id") String login_id) {
-   		System.out.println("setTalk");
+   		logger.info("setTalk");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
 		User user = userService.getUser(login_id);
@@ -115,7 +119,7 @@ public class TalktalkController {
     @PutMapping("/write")
    	public ResponseEntity<Map<String, Object>> updateTalk(@ModelAttribute Talktalk talktalk
 			, @RequestAttribute("login_id") String login_id) {
-   		System.out.println("updateTalk");
+   		logger.info("updateTalk");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		User user = userService.getUser(login_id);
@@ -138,7 +142,7 @@ public class TalktalkController {
 	// 톡톡 삭제
     @DeleteMapping("/write/{id}")
    	public ResponseEntity<Map<String, Object>> delete_normal(@PathVariable("id") int id) {
-   		System.out.println("delete_normal");
+   		logger.info("delete_normal");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		int delete_result = talktalkService.deleteTalktalk(id);
@@ -149,7 +153,7 @@ public class TalktalkController {
 	// 톡톡 조회수
     @PutMapping("/detail/count/{id}")
    	public ResponseEntity<Map<String, Object>> talkUpHit(@PathVariable("id") int id) {
-   		System.out.println("talkUpHit");
+   		logger.info("talkUpHit");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		int hit_result = talktalkService.talktalkUpHit(id);
@@ -161,7 +165,7 @@ public class TalktalkController {
     @PostMapping("/comment/write")
    	public ResponseEntity<Map<String, Object>> createTalkComment(@ModelAttribute Comment comment
 			, @RequestAttribute("login_id") String login_id) {
-   		System.out.println("createTalkComment");
+   		logger.info("createTalkComment");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		User user = userService.getUser(login_id);
@@ -179,7 +183,7 @@ public class TalktalkController {
 	// 댓글수정
     @PutMapping("/comment/write")
 	public ResponseEntity<Map<String, Object>> updateTalkComment(@ModelAttribute Comment comment) {
-   		System.out.println("updateTalkComment");
+   		logger.info("updateTalkComment");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
 		int update_result = talktalkService.updateComment(comment);
@@ -190,7 +194,7 @@ public class TalktalkController {
 	// 댓글 삭제
     @DeleteMapping("/comment/write/{id}")
 	public ResponseEntity<Map<String, Object>> deleteTalkComment(@PathVariable("id") int id) {
-   		System.out.println("deleteTalkComment");
+   		logger.info("deleteTalkComment");
    		Map<String, Object> result = new HashMap<String, Object>();
    		
    		int delete_result = talktalkService.deleteComment(id);

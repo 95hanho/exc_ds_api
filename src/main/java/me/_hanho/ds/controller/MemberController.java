@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import me._hanho.ds.service.UserService;
 @RestController
 @RequestMapping("/v1/member")
 public class MemberController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private UserService userService;
@@ -34,7 +38,7 @@ public class MemberController {
 	// 유저정보가져오기
 	@GetMapping("/info")
 	public ResponseEntity<Map<String, Object>> getUserInfo(@RequestAttribute("login_id") String login_id) {
-		System.out.println("getUserInfo");
+		logger.info("getUserInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		if(login_id != null) {
@@ -51,7 +55,7 @@ public class MemberController {
 	// 나의수강신청정보조회
 	@GetMapping("/application")
 	public ResponseEntity<Map<String, Object>> myApplication(@RequestAttribute("login_id") String login_id) {
-		System.out.println("myApplication");
+		logger.info("myApplication");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<Enroll> enroll_list = scheduleService.getEnrolls(login_id);
@@ -66,7 +70,7 @@ public class MemberController {
 	// 수강신청취소 사유목록
 	@GetMapping("/cancel/msg")
 	public ResponseEntity<Map<String, Object>> applyCancelList(@RequestAttribute("login_id") String login_id) {
-		System.out.println("applyCancelList");
+		logger.info("applyCancelList");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<String> cancel_list = new ArrayList<>();
@@ -85,7 +89,7 @@ public class MemberController {
 	@PutMapping("/application")
 	public ResponseEntity<Map<String, Object>> applyCancel(@ModelAttribute CancelLog cancel_log,
 			@RequestAttribute("login_id") String login_id) {
-		System.out.println("applyCancel");
+		logger.info("applyCancel");
 		Map<String, Object> result = new HashMap<String, Object>();
 		cancel_log.setLogin_id(login_id);
 		

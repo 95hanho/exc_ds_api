@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import me._hanho.ds.service.ScheduleService;
 @RequestMapping("/v1/application")
 public class ApplicationController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+	
 	@Autowired
 	private ScheduleService scheduleService;
 
@@ -29,7 +33,7 @@ public class ApplicationController {
 	@GetMapping("/{month}")
 	public ResponseEntity<Map<String, Object>> getSchedules(@PathVariable("month") String month,
 			@RequestAttribute("login_id") String login_id) {
-		System.out.println("getSchedules");
+		logger.info("getSchedules");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<Schedule> schedule_list = scheduleService.getSchedules(login_id);
@@ -42,7 +46,7 @@ public class ApplicationController {
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> programApply(@RequestParam("schedule_code") String schedule_code,
 			@RequestAttribute("login_id") String login_id) {
-		System.out.println("programApply");
+		logger.info("programApply");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		try {

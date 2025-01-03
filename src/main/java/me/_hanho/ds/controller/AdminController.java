@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +48,15 @@ import me._hanho.ds.service.AdminService;
 @RequestMapping("/v1/expert")
 public class AdminController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+	
 	@Autowired
 	private AdminService adminService;
 	
 	// 관리자 프로그램리스트 조회
 	@GetMapping("/application/{year}/{month}")
 	public ResponseEntity<Map<String, Object>> getAdminApp() {
-		System.out.println("getAdminApp");
+		logger.info("getAdminApp");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<Schedule> schedule_list = adminService.getAdminSchedules();
@@ -64,7 +68,7 @@ public class AdminController {
 	// 강의 정보수정
 	@PutMapping("/schedule/info")
 	public ResponseEntity<Map<String, Object>> setAdminApp(@ModelAttribute Schedule schedule) {
-		System.out.println("setAdminApp");
+		logger.info("setAdminApp");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.updateSchedule(schedule);
@@ -78,7 +82,7 @@ public class AdminController {
 	// 강의 프로그램 차수 등록
 	@PostMapping("/schedule/info")
 	public ResponseEntity<Map<String, Object>> addProgramSchedules(@RequestBody ExcelRequest excelData) {
-		System.out.println("addProgramSchedules");
+		logger.info("addProgramSchedules");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<Schedule> param_schedule_list = new ArrayList<>();
@@ -115,7 +119,7 @@ public class AdminController {
 	public Object actionCheckedPrograms(@RequestParam("type") String type,
 			@RequestParam("schedule_code") List<String> schedule_codes, 
 			HttpServletResponse response) throws IOException {
-		System.out.println("actionCheckedPrograms");
+		logger.info("actionCheckedPrograms");
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		List<User> student_list = null;
@@ -179,7 +183,7 @@ public class AdminController {
 	// 관리자 프로그램 신청인원 조회
 	@GetMapping("/user/enrollment")
 	public ResponseEntity<Map<String, Object>> getAdminAppStudents(@RequestParam("schedule_code") String schedule_code) {
-		System.out.println("getAdminAppStudents");
+		logger.info("getAdminAppStudents");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<Enroll> student_list = adminService.getAdminStudents(schedule_code);
@@ -194,7 +198,7 @@ public class AdminController {
 	public ResponseEntity<Map<String, Object>> setPresent(@RequestParam("member_no") List<String> member_no,
 			@RequestParam("schedule_code") String schedule_code, @RequestParam("type") String type,
 			@RequestParam(value = "description", defaultValue = "") String description) {
-		System.out.println("setPresent");
+		logger.info("setPresent");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.updatePresent(member_no, schedule_code, type, description);
@@ -206,7 +210,7 @@ public class AdminController {
 	@PutMapping("/user/enrollment")
 	public ResponseEntity<Map<String, Object>> setEnrollStudent(@RequestParam("enroll_id") int enroll_id,
 			@RequestParam("to_member_no") int member_no, @RequestAttribute("login_id") String login_id) {
-		System.out.println("setEnrollStudent");
+		logger.info("setEnrollStudent");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.deleteStudent(enroll_id, member_no, login_id);
@@ -221,7 +225,7 @@ public class AdminController {
 	@DeleteMapping("/user/enrollment")
 	public ResponseEntity<Map<String, Object>> deleteEnrollStudent(@ModelAttribute CancelLog cancel_log,
 			@RequestAttribute("login_id") String login_id) {
-		System.out.println("deleteEnrollStudent");
+		logger.info("deleteEnrollStudent");
 		Map<String, Object> result = new HashMap<String, Object>();
 		cancel_log.setExecutor(login_id);
 
@@ -239,7 +243,7 @@ public class AdminController {
 	@GetMapping("/member/search")
 	public ResponseEntity<Map<String, Object>> getStudentsSearch(@RequestParam("type") String type,
 			@RequestParam("keyword") String keyword) {
-		System.out.println("getStudentsSearch");
+		logger.info("getStudentsSearch");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<User> user_list = adminService.userSearch(type, keyword);
@@ -252,7 +256,7 @@ public class AdminController {
 	@GetMapping("/member/info")
 	public ResponseEntity<Map<String, Object>> getStudentInfo(@RequestParam("member_no") int member_no,
 			@RequestParam("month") String month) {
-		System.out.println("getStudentInfo");
+		logger.info("getStudentInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<CancelLog> log_list = adminService.getLogs(member_no);
@@ -272,7 +276,7 @@ public class AdminController {
 	// 교육색 정보 수정하기
 	@PutMapping("/member/info")
 	public ResponseEntity<Map<String, Object>> setStudentInfo(@ModelAttribute User user) {
-		System.out.println("setStudentInfo");
+		logger.info("setStudentInfo");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.updateUser(user);
@@ -284,7 +288,7 @@ public class AdminController {
 	// 과정가져오기
 	@GetMapping("/program/info")
 	public ResponseEntity<Map<String, Object>> getProgram() {
-		System.out.println("getProgram");
+		logger.info("getProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<ProgramCategory> catelist = adminService.getProgramCategory();
@@ -297,7 +301,7 @@ public class AdminController {
 	@PostMapping("/program/write")
 	public ResponseEntity<Map<String, Object>> addProgram(@ModelAttribute Program program, 
 			@RequestParam(value="file", required=false) MultipartFile file) {
-		System.out.println("addProgram");
+		logger.info("addProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		Program latest_program = adminService.getProgramLatest();
@@ -325,7 +329,7 @@ public class AdminController {
 	@PostMapping("/program/modify")
 	public ResponseEntity<Map<String, Object>> setProgram(@ModelAttribute Program program, 
 			@RequestParam(value="file", required=false) MultipartFile file) {
-		System.out.println("setProgram");
+		logger.info("setProgram");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		// "4H (8:30~12:30 / 13:30~17:30)" time이랑 ment로 구분
@@ -343,7 +347,7 @@ public class AdminController {
 	// 과정 숨김
 	@GetMapping("/program/modify/{code}")
 	public ResponseEntity<Map<String, Object>> programHide(@PathVariable("code") String program_code) {
-		System.out.println("programHide");
+		logger.info("programHide");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.updateProgram_status(program_code);
@@ -355,7 +359,7 @@ public class AdminController {
 	// 기본 설정 정보 가져오기
 	@GetMapping("/other/main")
 	public ResponseEntity<Map<String, Object>> getInitMonth() {
-		System.out.println("getInitMonth");
+		logger.info("getInitMonth");
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> data_result = new HashMap<String, Object>();
 		
@@ -380,7 +384,7 @@ public class AdminController {
 	// 취소 사유 목록 엑셀다운로드
 	@GetMapping("/other/excel/cancel")
 	public void cancelListDownload(HttpServletResponse response) throws IOException {
-		System.out.println("cancelListDownload");
+		logger.info("cancelListDownload");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<CancelLog> cancel_list = adminService.getCancels();
@@ -421,7 +425,7 @@ public class AdminController {
 	public ResponseEntity<Map<String, Object>> setMainPopup(@RequestParam(value="file1", required=false) MultipartFile file1,
 			@RequestParam(value="file2", required=false) MultipartFile file2, @RequestParam("file1_status") Boolean file1_status,
 			@RequestParam("file2_status") Boolean file2_status) {
-		System.out.println("setMainPopup");
+		logger.info("setMainPopup");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.updatePopup(file1, file1_status, 1);
@@ -433,7 +437,7 @@ public class AdminController {
 	// 수강생 후기 작성
 	@PostMapping("/other/review")
 	public ResponseEntity<Map<String, Object>> addReview(@ModelAttribute Review review) {
-		System.out.println("addReview");
+		logger.info("addReview");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		adminService.createReview(review);

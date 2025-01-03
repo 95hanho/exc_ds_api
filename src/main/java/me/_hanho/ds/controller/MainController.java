@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import me._hanho.ds.service.NoticeService;
 @RequestMapping("/v1/main")
 public class MainController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+	
 	@Autowired
 	private NoticeService noticeService;
 	
@@ -30,7 +34,7 @@ public class MainController {
 	// 메인페이지 필요정보
 	@GetMapping("/latest")
 	public ResponseEntity<Map<String, Object>> mainInit() {
-		System.out.println("getProgram");
+		logger.info("mainInit");
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		ArrayList<Notice> notice_latest = noticeService.getNoticesLatest();

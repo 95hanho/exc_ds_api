@@ -16,7 +16,7 @@
 		    s.enrol_limit,
 		    (
 		        SELECT COUNT(*)
-		        FROM enroll e
+		        FROM ds_enroll e
 		        WHERE e.s_id = s.s_id
 		    ) AS enrol_count,
 		    s.schedule_status,
@@ -26,14 +26,14 @@
 		    CASE 
 		        WHEN EXISTS (
 		            SELECT 1 
-		            FROM enroll e_sub 
+		            FROM ds_enroll e_sub 
 		            WHERE e_sub.s_id = s.s_id AND e_sub.login_id = #{login_id}
 		        ) THEN 1
 		        ELSE 0
 		    END AS my_enrol_status
-		FROM schedule s
-		JOIN program p ON p.program_num = s.program_num
-		JOIN program_category pc ON p.category_num = pc.cate_num
+		FROM ds_schedule s
+		JOIN ds_program p ON p.program_num = s.program_num
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
 		WHERE s.open_status = 1
 		ORDER BY s.schedule_start_date DESC
 	</select>
@@ -52,7 +52,7 @@
 		    s.enrol_limit,
 		    (
 		        SELECT COUNT(*)
-		        FROM enroll e
+		        FROM ds_enroll e
 		        WHERE e.s_id = s.s_id
 		    ) AS enrol_count,
 		    s.schedule_status,
@@ -62,20 +62,20 @@
 		    CASE 
 		        WHEN EXISTS (
 		            SELECT 1 
-		            FROM enroll e_sub 
+		            FROM ds_enroll e_sub 
 		            WHERE e_sub.s_id = s.s_id AND e_sub.login_id = #{login_id}
 		        ) THEN 1
 		        ELSE 0
 		    END AS my_enrol_status
-		FROM schedule s
-		JOIN program p ON p.program_num = s.program_num
-		JOIN program_category pc ON p.category_num = pc.cate_num
+		FROM ds_schedule s
+		JOIN ds_program p ON p.program_num = s.program_num
+		JOIN ds_program_category pc ON p.category_num = pc.cate_num
 		WHERE s.open_status = 1 AND schedule_code = #{schedule_code}
 		ORDER BY s.schedule_start_date DESC
 	</select>
 	<insert id="createEnroll">
-		INSERT INTO enroll(s_id, login_id)
-		VALUES ((SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}), #{login_id})
+		INSERT INTO ds_enroll(s_id, login_id)
+		VALUES ((SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code}), #{login_id})
 	</insert>
 	<select id="getEnrolls">
 		WITH RankedEnrollments AS (
@@ -84,7 +84,7 @@
 		        e.s_id,
 		        e.login_id,
 		        ROW_NUMBER() OVER (PARTITION BY e.s_id ORDER BY e.created_at ASC) AS row_num
-		    FROM enroll e
+		    FROM ds_enroll e
 		),
 		WaitingList AS (
 		    SELECT 
@@ -92,7 +92,7 @@
 		        re.s_id,
 		        re.row_num - s.enrol_limit AS enrol_waiting_rank
 		    FROM RankedEnrollments re
-		    JOIN schedule s ON re.s_id = s.s_id
+		    JOIN ds_schedule s ON re.s_id = s.s_id
 		    WHERE re.row_num > s.enrol_limit
 		)
 		SELECT
@@ -101,18 +101,18 @@
 		    e.enrol_id,
 		    p.program_name AS title,
 		    COALESCE(w.enrol_waiting_rank, 0) AS enrol_waiting_rank
-		FROM enroll e
-		JOIN schedule s ON s.s_id = e.s_id
-		JOIN program p ON p.program_num = s.program_num
+		FROM ds_enroll e
+		JOIN ds_schedule s ON s.s_id = e.s_id
+		JOIN ds_program p ON p.program_num = s.program_num
 		LEFT JOIN WaitingList w ON e.enrol_id = w.enrol_id
 		WHERE e.login_id = #{login_id}
 	</select>
 	<delete id="deleteEnroll">
-		DELETE FROM enroll
-		WHERE login_id = #{login_id} and s_id = (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}) 
+		DELETE FROM ds_enroll
+		WHERE login_id = #{login_id} and s_id = (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code}) 
 	</delete>
 	<insert id="createCancelLog">
-		INSERT INTO cancel_log(reason, flag, s_id, login_id, executor)
-		VALUES (#{reason}, #{flag}, (SELECT s_id FROM schedule WHERE schedule_code = #{schedule_code}), #{login_id}, #{login_id})
+		INSERT INTO ds_cancel_log(reason, flag, s_id, login_id, executor)
+		VALUES (#{reason}, #{flag}, (SELECT s_id FROM ds_schedule WHERE schedule_code = #{schedule_code}), #{login_id}, #{login_id})
 	</insert>
 </mapper>
