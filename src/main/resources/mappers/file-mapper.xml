@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.FileMapper">
+	<insert id="createNoticeFile">
+		INSERT INTO ds_file(name, filePath, notice_id)
+		VALUES (#{name}, #{filePath}, #{notice_id})
+	</insert>
+	<insert id="createProgramFile">
+		INSERT INTO ds_file(name, filePath, program_num)
+		VALUES (#{name}, #{filePath}, #{program_num})
+	</insert>
+	<insert id="createPopupFile">
+		INSERT INTO ds_file(name, filePath, popup_id)
+		VALUES (#{name}, #{filePath}, #{popup_id})
+	</insert>
+	<update id="updateNoticeFile">
+		UPDATE ds_file
+		SET name = #{name}, filePath = #{filePath}
+		WHERE notice_id = #{notice_id}
+	</update>
+	<update id="updateProgramFile">
+		UPDATE ds_file
+		SET name = #{name}, filePath = #{filePath}
+		WHERE program_num = #{program_num}
+	</update>
+	<update id="updatePopupFile">
+		UPDATE ds_file
+		SET name = #{name}, filePath = #{filePath}
+		WHERE popup_id = #{popup_id}
+	</update>
+	<delete id="deleteNoticeFile">
+		DELETE FROM ds_file
+		WHERE notice_id = #{id}
+	</delete>
+	<delete id="deleteProgramFile">
+		DELETE FROM ds_file
+		WHERE program_num = #{id}
+	</delete>
+	<delete id="deletePopupFile">
+		DELETE FROM ds_file
+		WHERE popup_id = #{id}
+	</delete>
+	<select id="getNoticeFiles">
+		SELECT file_num, name, filePath, filePath AS url, created_at, notice_id, program_num
+		FROM ds_file
+		WHERE notice_id = #{id}
+	</select>
+	<select id="getProgramFiles">
+		SELECT * FROM ds_file
+		WHERE program_num = #{id}
+	</select>
+	<select id="getPopupFiles">
+		SELECT * FROM ds_file
+		WHERE popup_id = #{id}
+	</select>
+	<select id="selectLatestFile">
+		SELECT * FROM ds_file
+		order by created_at desc limit 1
+	</select>
+	<select id="getMainPopups">
+		SELECT filePath
+		FROM ds_file
+		WHERE popup_id != "";
+	</select>
+</mapper>

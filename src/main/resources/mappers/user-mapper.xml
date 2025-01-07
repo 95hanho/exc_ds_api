@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.UserMapper">
+	<select id="getUser" resultType="User">
+        SELECT * FROM ds_user 
+        WHERE login_id = #{login_id} and login_pwd = #{login_pwd}
+    </select>
+    <select id="getUser2" resultType="User" >
+        SELECT * FROM ds_user 
+        WHERE login_id = #{login_id}
+    </select>
+    <select id="getUser3">
+		SELECT u.* FROM ds_user u 
+		JOIN ds_token t ON u.login_id = t.login_id
+		WHERE t.refresh_token = #{refresh_token} and t.agent = #{agent} and t.connect_ip = #{connect_ip}
+		order by t.created_at desc limit 1
+	</select>
+    <select id="getToken" resultType="Token">
+		SELECT * FROM ds_token 
+		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+		order by created_at desc limit 1
+	</select>
+    <insert id="insertToken">
+		INSERT INTO ds_token(refresh_token, agent, connect_ip, login_id) 
+		VALUES (#{refresh_token}, #{agent}, #{connect_ip}, #{login_id})
+	</insert>
+	<select id="get_token_num">
+		SELECT token_num
+		FROM ds_token
+		WHERE agent = #{agent} and connect_ip = #{connect_ip} and login_id = #{login_id}
+		ORDER BY created_at DESC
+		LIMIT 1
+	</select>
+	<update id="updateToken">
+		UPDATE ds_token
+		SET refresh_token = #{refresh_token}
+		WHERE token_num = #{token_num}
+	</update>
+</mapper>

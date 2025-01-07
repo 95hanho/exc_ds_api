@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="me._hanho.ds.mapper.NoticeMapper">
+	<insert id="createNotice">
+		INSERT INTO ds_notice(title, content, secret, top, type, writer, writer_login_id)
+		VALUES (#{title}, #{content}, #{secret}, #{top}, #{type}, #{writer}, #{writer_login_id})
+	</insert>
+	<update id="updateNotice">
+		UPDATE ds_notice 
+		SET title = #{title}, content = #{content}, secret = #{secret}
+		WHERE id = #{id} and writer_login_id = #{writer_login_id}
+	</update>
+	<select id="getNotice">
+		select *
+		from ds_notice
+		order by regdate desc limit 1
+	</select>
+	<select id="getNotice2">
+		select *
+		from ds_notice
+		where id = #{id}
+	</select>
+	<select id="getNoticeCount">
+		select count(*)
+		from ds_notice
+	</select>
+	<select id="getNotices">
+   		SELECT *
+    	FROM ds_notice
+    	ORDER BY
+        CASE WHEN type = 'G' THEN 0 ELSE 1 END,
+        id DESC
+    	LIMIT #{size} OFFSET #{offset}
+	</select>
+	<select id="getNoticesLatest">
+		SELECT *
+    	FROM ds_notice
+    	WHERE type = 'G'
+    	ORDER BY id DESC
+    	LIMIT 4
+	</select>
+	<delete id="deleteNotice">
+		DELETE FROM ds_notice
+		WHERE id = #{id}
+	</delete>
+	<update id="noticeUpHit">
+		update ds_notice
+		set hit = hit + 1
+		where id = #{id}
+	</update>
+	<insert id="createComment">
+		INSERT INTO ds_comment(content, writer, writer_login_id, notice_id)
+		VALUES (#{content}, #{writer}, #{writer_login_id}, #{notice_id})
+	</insert>
+	<select id="getComment">
+		select *
+		from ds_comment
+		order by regdate desc limit 1
+	</select>
+	<select id="getComments">
+		select *
+		from ds_comment
+		where notice_id = #{id}
+		ORDER BY id
+	</select>
+	<update id="updateComment">
+		UPDATE ds_comment
+		SET content = #{content}
+		WHERE id = #{id}
+	</update>
+	<delete id="deleteComment">
+		DELETE FROM ds_comment
+		WHERE id = #{id}
+	</delete>
+	<update id="updateNoticeManagerLatest">
+		UPDATE ds_notice
+		SET manager_comment_latest = #{status}
+		WHERE id = #{id}
+	</update>
+</mapper>
