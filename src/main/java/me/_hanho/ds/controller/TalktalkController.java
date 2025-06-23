@@ -1,6 +1,7 @@
 package me._hanho.ds.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me._hanho.ds.model.Comment;
-import me._hanho.ds.model.Notice;
 import me._hanho.ds.model.Talktalk;
-import me._hanho.ds.model.UploadFile;
 import me._hanho.ds.model.User;
 import me._hanho.ds.service.TalktalkService;
 import me._hanho.ds.service.UserService;
@@ -141,9 +141,21 @@ public class TalktalkController {
    	}
 	// 톡톡 삭제
     @DeleteMapping("/write/{id}")
-   	public ResponseEntity<Map<String, Object>> delete_normal(@PathVariable("id") int id) {
+   	public ResponseEntity<Map<String, Object>> delete_normal(@PathVariable("id") int id, HttpServletRequest request) {
    		logger.info("delete_normal");
    		Map<String, Object> result = new HashMap<String, Object>();
+   		
+   		String ipAddress = request.getRemoteAddr();
+		logger.info("ipAddress : " + ipAddress);
+		
+		// 허용 IP 리스트
+	    List<String> allowedIps = Arrays.asList("203.245.44.21"); // 허용할 IP를 리스트에 추가
+	    
+	    // IP 제한 체크
+	    if (!allowedIps.contains(ipAddress)) {
+	        result.put("msg", "Access denied: Unauthorized IP");
+	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+	    }
    		
    		int delete_result = talktalkService.deleteTalktalk(id);
 		

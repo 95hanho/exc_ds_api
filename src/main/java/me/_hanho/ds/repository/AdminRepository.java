@@ -43,11 +43,21 @@ public class AdminRepository {
 	}
 	
 	public Schedule getAdminSchedule(String schedule_code) {
-		return adminMapper.getAdminSchedule(schedule_code);
+		Schedule schedule = adminMapper.getAdminSchedule(schedule_code);
+		String json = schedule.getSchedule_after_date_JSON();
+		if(json != null) {
+			schedule.setSchedule_after_date(JsonUtils.parseScheduleAfterDate(schedule.getSchedule_after_date_JSON()));
+		}
+		return schedule;
 	}
 	
 	public Schedule getAdminSchedule(int enroll_id) {
-		return adminMapper.getAdminSchedule2(enroll_id);
+		Schedule schedule = adminMapper.getAdminSchedule2(enroll_id);
+		String json = schedule.getSchedule_after_date_JSON();
+		if(json != null) {
+			schedule.setSchedule_after_date(JsonUtils.parseScheduleAfterDate(schedule.getSchedule_after_date_JSON()));
+		}
+		return schedule;
 	}
 
 	public void setSchedules(List<Schedule> param_schedule_list) {

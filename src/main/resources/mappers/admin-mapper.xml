@@ -60,7 +60,7 @@
 		    s.schedule_enrol_end_date,
 		    s.schedule_start_date,
 		    s.schedule_start_date_add_date,
-		    JSON_UNQUOTE(JSON_EXTRACT(s.schedule_after_date, '$')) AS schedule_after_date_JSON,
+		    s.schedule_after_date AS schedule_after_date_JSON,
 		    p.program_name AS title,
 		    p.time,
 		    s.online,
@@ -93,7 +93,7 @@
 		    s.schedule_enrol_end_date,
 		    s.schedule_start_date,
 		    s.schedule_start_date_add_date,
-		    JSON_UNQUOTE(JSON_EXTRACT(s.schedule_after_date, '$')) AS schedule_after_date_JSON,
+		    s.schedule_after_date AS schedule_after_date_JSON,
 		    p.program_name AS title,
 		    p.time,
 		    s.online,
@@ -132,7 +132,7 @@
 		online = #{online},
 		part_type = #{part_type}, schedule_number = #{schedule_number},
 		schedule_start_date_add_date = #{schedule_start_date_add_date},
-		schedule_after_date = #{schedule_after_date}
+		schedule_after_date = #{schedule_after_date_JSON}
 		WHERE schedule_code = #{schedule_code}
 	</update>
 	<update id="updateProgramTime">

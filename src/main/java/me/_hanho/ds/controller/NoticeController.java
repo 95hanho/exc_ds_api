@@ -1,6 +1,7 @@
 package me._hanho.ds.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me._hanho.ds.model.Comment;
 import me._hanho.ds.model.Notice;
 import me._hanho.ds.model.UploadFile;
@@ -126,10 +128,22 @@ public class NoticeController {
 	}
 	// 공지QnA 수정
 	@PutMapping("/write")
-	public ResponseEntity<Map<String, Object>> updateNoticeQna(@ModelAttribute Notice notice
+	public ResponseEntity<Map<String, Object>> updateNoticeQna(@ModelAttribute Notice notice, HttpServletRequest request
 			, @RequestAttribute("login_id") String login_id) {
 		logger.info("updateNoticeQna");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		String ipAddress = request.getRemoteAddr();
+		logger.info("ipAddress : " + ipAddress);
+		
+		// 허용 IP 리스트
+	    List<String> allowedIps = Arrays.asList("203.245.44.21"); // 허용할 IP를 리스트에 추가
+	    
+	    // IP 제한 체크
+	    if (!allowedIps.contains(ipAddress)) {
+	        result.put("msg", "Access denied: Unauthorized IP");
+	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+	    }
 		
 		User user = userService.getUser(login_id);
 		notice.setWriter_login_id(login_id);
@@ -156,9 +170,22 @@ public class NoticeController {
 	}
 	// 공지QnA 삭제
 	@DeleteMapping("/write/{id}")
-	public ResponseEntity<Map<String, Object>> deleteNoticeQna(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String, Object>> deleteNoticeQna(@PathVariable("id") int id, HttpServletRequest request) {
 		logger.info("deleteNoticeQna");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		String ipAddress = request.getRemoteAddr();
+		logger.info("ipAddress : " + ipAddress);
+		
+		// 허용 IP 리스트
+	    List<String> allowedIps = Arrays.asList("203.245.44.21"); // 허용할 IP를 리스트에 추가
+	    
+	    // IP 제한 체크
+	    if (!allowedIps.contains(ipAddress)) {
+	        result.put("msg", "Access denied: Unauthorized IP");
+	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+	    }
+		
 		
 		int delete_result = noticeService.deleteNotice(id);
 		
@@ -188,9 +215,21 @@ public class NoticeController {
 	}
 	// 공지QnA 파일삭제요청
 	@DeleteMapping("/file/{id}")
-	public ResponseEntity<Map<String, Object>> noticeFileDelete(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String, Object>> noticeFileDelete(@PathVariable("id") int id, HttpServletRequest request) {
 		logger.info("noticeFileDelete");
 		Map<String, Object> result = new HashMap<String, Object>();
+		
+		String ipAddress = request.getRemoteAddr();
+		logger.info("ipAddress : " + ipAddress);
+		
+		// 허용 IP 리스트
+	    List<String> allowedIps = Arrays.asList("203.245.44.21"); // 허용할 IP를 리스트에 추가
+	    
+	    // IP 제한 체크
+	    if (!allowedIps.contains(ipAddress)) {
+	        result.put("msg", "Access denied: Unauthorized IP");
+	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+	    }
 		
 		ArrayList<UploadFile> file_list = fileService.getFiles(id, "notice");
 		

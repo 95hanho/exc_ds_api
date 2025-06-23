@@ -84,9 +84,7 @@ public class AdminController {
 	        result.put("msg", "Access denied: Unauthorized IP");
 	        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
 	    }
-		
 		adminService.updateSchedule(schedule);
-		
 		Schedule result_schedule = adminService.getAdminSchedule(schedule.getSchedule_code());
 
 		result.put("data", result_schedule);
@@ -226,8 +224,6 @@ public class AdminController {
 		
 		ArrayList<Enroll> student_list = adminService.getAdminStudents(schedule_code);
 		
-		System.out.println(student_list);
-
 		result.put("enrol_final_status", true);
 		result.put("schedule_info", student_list);
 		result.put("msg", "success");
