@@ -27,6 +27,8 @@ public class JwtInterceptor implements HandlerInterceptor {
 		 
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			access_token = authorizationHeader.substring(7); // "Bearer " 이후의 문자열만 추출
+	    } else {
+	    	access_token = authorizationHeader;
 	    }
 		
 		

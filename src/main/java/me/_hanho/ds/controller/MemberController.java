@@ -38,7 +38,7 @@ public class MemberController {
 	// 유저정보가져오기
 	@GetMapping("/info")
 	public ResponseEntity<Map<String, Object>> getUserInfo(@RequestAttribute("login_id") String login_id) {
-		logger.info("getUserInfo");
+		logger.info("getUserInfo login_id : " + login_id);
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		if(login_id != null) {
